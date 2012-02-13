@@ -8,7 +8,9 @@
 
 #import "ZBFlipsideViewController.h"
 
-@interface ZBMainViewController : UIViewController <ZBFlipsideViewControllerDelegate>
+@interface ZBMainViewController : UIViewController <ZBFlipsideViewControllerDelegate, UIScrollViewDelegate>
+
+@property (retain, nonatomic) IBOutlet UIScrollView *scrollView;
 
 - (IBAction)showInfo:(id)sender;
 

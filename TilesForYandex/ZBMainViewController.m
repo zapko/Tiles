@@ -6,9 +6,17 @@
 //  Copyright (c) 2012 Zababako. All rights reserved.
 //
 
+#define kTileHorSize 128
+#define kTileVerSize 128
+
+#define kTileHorNum 100
+#define kTileVerNum 100
+
+
 #import "ZBMainViewController.h"
 
 @implementation ZBMainViewController
+@synthesize scrollView;
 
 
 - (void)didReceiveMemoryWarning
@@ -27,6 +35,7 @@
 
 - (void)viewDidUnload
 {
+	[self setScrollView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -73,4 +82,8 @@
     [self presentModalViewController:controller animated:YES];
 }
 
+- (void)dealloc {
+	[scrollView release];
+	[super dealloc];
+}
 @end
