@@ -1,0 +1,298 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		25ADC3AE14E9683C001D7543 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25ADC3AD14E9683C001D7543 /* UIKit.framework */; };
+		25ADC3B014E9683C001D7543 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25ADC3AF14E9683C001D7543 /* Foundation.framework */; };
+		25ADC3B214E9683C001D7543 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25ADC3B114E9683C001D7543 /* CoreGraphics.framework */; };
+		25ADC3B814E9683C001D7543 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 25ADC3B614E9683C001D7543 /* InfoPlist.strings */; };
+		25ADC3BA14E9683D001D7543 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 25ADC3B914E9683D001D7543 /* main.m */; };
+		25ADC3BE14E9683D001D7543 /* ZBAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 25ADC3BD14E9683D001D7543 /* ZBAppDelegate.m */; };
+		25ADC3C114E9683D001D7543 /* ZBMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25ADC3C014E9683D001D7543 /* ZBMainViewController.m */; };
+		25ADC3C414E9683D001D7543 /* ZBFlipsideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25ADC3C314E9683D001D7543 /* ZBFlipsideViewController.m */; };
+		25ADC3C714E9683D001D7543 /* ZBMainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25ADC3C514E9683D001D7543 /* ZBMainViewController.xib */; };
+		25ADC3CA14E9683D001D7543 /* ZBFlipsideViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25ADC3C814E9683D001D7543 /* ZBFlipsideViewController.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		25ADC3A914E9683C001D7543 /* TilesForYandex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TilesForYandex.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		25ADC3AD14E9683C001D7543 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		25ADC3AF14E9683C001D7543 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		25ADC3B114E9683C001D7543 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		25ADC3B514E9683C001D7543 /* TilesForYandex-Info.plist */ = {isa = PBXFileReference; path = "TilesForYandex-Info.plist"; sourceTree = "<group>"; };
+		25ADC3B714E9683C001D7543 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		25ADC3B914E9683D001D7543 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		25ADC3BB14E9683D001D7543 /* TilesForYandex-Prefix.pch */ = {isa = PBXFileReference; path = "TilesForYandex-Prefix.pch"; sourceTree = "<group>"; };
+		25ADC3BC14E9683D001D7543 /* ZBAppDelegate.h */ = {isa = PBXFileReference; path = ZBAppDelegate.h; sourceTree = "<group>"; };
+		25ADC3BD14E9683D001D7543 /* ZBAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZBAppDelegate.m; sourceTree = "<group>"; };
+		25ADC3BF14E9683D001D7543 /* ZBMainViewController.h */ = {isa = PBXFileReference; path = ZBMainViewController.h; sourceTree = "<group>"; };
+		25ADC3C014E9683D001D7543 /* ZBMainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZBMainViewController.m; sourceTree = "<group>"; };
+		25ADC3C214E9683D001D7543 /* ZBFlipsideViewController.h */ = {isa = PBXFileReference; path = ZBFlipsideViewController.h; sourceTree = "<group>"; };
+		25ADC3C314E9683D001D7543 /* ZBFlipsideViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZBFlipsideViewController.m; sourceTree = "<group>"; };
+		25ADC3C614E9683D001D7543 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ZBMainViewController.xib; sourceTree = "<group>"; };
+		25ADC3C914E9683D001D7543 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ZBFlipsideViewController.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		25ADC3A614E9683C001D7543 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				25ADC3AE14E9683C001D7543 /* UIKit.framework in Frameworks */,
+				25ADC3B014E9683C001D7543 /* Foundation.framework in Frameworks */,
+				25ADC3B214E9683C001D7543 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		25ADC39E14E9683C001D7543 = {
+			isa = PBXGroup;
+			children = (
+				25ADC3B314E9683C001D7543 /* TilesForYandex */,
+				25ADC3AC14E9683C001D7543 /* Frameworks */,
+				25ADC3AA14E9683C001D7543 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		25ADC3AA14E9683C001D7543 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				25ADC3A914E9683C001D7543 /* TilesForYandex.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		25ADC3AC14E9683C001D7543 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				25ADC3AD14E9683C001D7543 /* UIKit.framework */,
+				25ADC3AF14E9683C001D7543 /* Foundation.framework */,
+				25ADC3B114E9683C001D7543 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		25ADC3B314E9683C001D7543 /* TilesForYandex */ = {
+			isa = PBXGroup;
+			children = (
+				25ADC3BC14E9683D001D7543 /* ZBAppDelegate.h */,
+				25ADC3BD14E9683D001D7543 /* ZBAppDelegate.m */,
+				25ADC3BF14E9683D001D7543 /* ZBMainViewController.h */,
+				25ADC3C014E9683D001D7543 /* ZBMainViewController.m */,
+				25ADC3C214E9683D001D7543 /* ZBFlipsideViewController.h */,
+				25ADC3C314E9683D001D7543 /* ZBFlipsideViewController.m */,
+				25ADC3C514E9683D001D7543 /* ZBMainViewController.xib */,
+				25ADC3C814E9683D001D7543 /* ZBFlipsideViewController.xib */,
+				25ADC3B414E9683C001D7543 /* Supporting Files */,
+			);
+			path = TilesForYandex;
+			sourceTree = "<group>";
+		};
+		25ADC3B414E9683C001D7543 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				25ADC3B514E9683C001D7543 /* TilesForYandex-Info.plist */,
+				25ADC3B614E9683C001D7543 /* InfoPlist.strings */,
+				25ADC3B914E9683D001D7543 /* main.m */,
+				25ADC3BB14E9683D001D7543 /* TilesForYandex-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		25ADC3A814E9683C001D7543 /* TilesForYandex */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 25ADC3CD14E9683D001D7543 /* Build configuration list for PBXNativeTarget "TilesForYandex" */;
+			buildPhases = (
+				25ADC3A514E9683C001D7543 /* Sources */,
+				25ADC3A614E9683C001D7543 /* Frameworks */,
+				25ADC3A714E9683C001D7543 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TilesForYandex;
+			productName = TilesForYandex;
+			productReference = 25ADC3A914E9683C001D7543 /* TilesForYandex.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		25ADC3A014E9683C001D7543 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+				ORGANIZATIONNAME = Zababako;
+			};
+			buildConfigurationList = 25ADC3A314E9683C001D7543 /* Build configuration list for PBXProject "TilesForYandex" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 25ADC39E14E9683C001D7543;
+			productRefGroup = 25ADC3AA14E9683C001D7543 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				25ADC3A814E9683C001D7543 /* TilesForYandex */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		25ADC3A714E9683C001D7543 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				25ADC3B814E9683C001D7543 /* InfoPlist.strings in Resources */,
+				25ADC3C714E9683D001D7543 /* ZBMainViewController.xib in Resources */,
+				25ADC3CA14E9683D001D7543 /* ZBFlipsideViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		25ADC3A514E9683C001D7543 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				25ADC3BA14E9683D001D7543 /* main.m in Sources */,
+				25ADC3BE14E9683D001D7543 /* ZBAppDelegate.m in Sources */,
+				25ADC3C114E9683D001D7543 /* ZBMainViewController.m in Sources */,
+				25ADC3C414E9683D001D7543 /* ZBFlipsideViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		25ADC3B614E9683C001D7543 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				25ADC3B714E9683C001D7543 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		25ADC3C514E9683D001D7543 /* ZBMainViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				25ADC3C614E9683D001D7543 /* en */,
+			);
+			name = ZBMainViewController.xib;
+			sourceTree = "<group>";
+		};
+		25ADC3C814E9683D001D7543 /* ZBFlipsideViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				25ADC3C914E9683D001D7543 /* en */,
+			);
+			name = ZBFlipsideViewController.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		25ADC3CB14E9683D001D7543 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		25ADC3CC14E9683D001D7543 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		25ADC3CE14E9683D001D7543 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TilesForYandex/TilesForYandex-Prefix.pch";
+				INFOPLIST_FILE = "TilesForYandex/TilesForYandex-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		25ADC3CF14E9683D001D7543 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TilesForYandex/TilesForYandex-Prefix.pch";
+				INFOPLIST_FILE = "TilesForYandex/TilesForYandex-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		25ADC3A314E9683C001D7543 /* Build configuration list for PBXProject "TilesForYandex" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				25ADC3CB14E9683D001D7543 /* Debug */,
+				25ADC3CC14E9683D001D7543 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		25ADC3CD14E9683D001D7543 /* Build configuration list for PBXNativeTarget "TilesForYandex" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				25ADC3CE14E9683D001D7543 /* Debug */,
+				25ADC3CF14E9683D001D7543 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 25ADC3A014E9683C001D7543 /* Project object */;
+}
