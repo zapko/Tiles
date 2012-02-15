@@ -18,6 +18,8 @@
 		25ADC3C714E9683D001D7543 /* ZBMainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25ADC3C514E9683D001D7543 /* ZBMainViewController.xib */; };
 		25ADC3CA14E9683D001D7543 /* ZBFlipsideViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25ADC3C814E9683D001D7543 /* ZBFlipsideViewController.xib */; };
 		25ADC3E614EB0FA9001D7543 /* ZBTileScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25ADC3E514EB0FA9001D7543 /* ZBTileScrollView.m */; };
+		25ADC3E814EBF73A001D7543 /* tile.png in Resources */ = {isa = PBXBuildFile; fileRef = 25ADC3E714EBF73A001D7543 /* tile.png */; };
+		25ADC3EA14EBFC6A001D7543 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25ADC3E914EBFC6A001D7543 /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +41,8 @@
 		25ADC3C914E9683D001D7543 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ZBFlipsideViewController.xib; sourceTree = "<group>"; };
 		25ADC3E414EB0FA9001D7543 /* ZBTileScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBTileScrollView.h; sourceTree = "<group>"; };
 		25ADC3E514EB0FA9001D7543 /* ZBTileScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBTileScrollView.m; sourceTree = "<group>"; };
+		25ADC3E714EBF73A001D7543 /* tile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tile.png; sourceTree = "<group>"; };
+		25ADC3E914EBFC6A001D7543 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,6 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25ADC3EA14EBFC6A001D7543 /* QuartzCore.framework in Frameworks */,
 				25ADC3AE14E9683C001D7543 /* UIKit.framework in Frameworks */,
 				25ADC3B014E9683C001D7543 /* Foundation.framework in Frameworks */,
 				25ADC3B214E9683C001D7543 /* CoreGraphics.framework in Frameworks */,
@@ -58,6 +63,7 @@
 		25ADC39E14E9683C001D7543 = {
 			isa = PBXGroup;
 			children = (
+				25ADC3E914EBFC6A001D7543 /* QuartzCore.framework */,
 				25ADC3B314E9683C001D7543 /* TilesForYandex */,
 				25ADC3AC14E9683C001D7543 /* Frameworks */,
 				25ADC3AA14E9683C001D7543 /* Products */,
@@ -95,6 +101,7 @@
 				25ADC3C314E9683D001D7543 /* ZBFlipsideViewController.m */,
 				25ADC3C514E9683D001D7543 /* ZBMainViewController.xib */,
 				25ADC3C814E9683D001D7543 /* ZBFlipsideViewController.xib */,
+				25ADC3E714EBF73A001D7543 /* tile.png */,
 				25ADC3B414E9683C001D7543 /* Supporting Files */,
 			);
 			path = TilesForYandex;
@@ -165,6 +172,7 @@
 				25ADC3B814E9683C001D7543 /* InfoPlist.strings in Resources */,
 				25ADC3C714E9683D001D7543 /* ZBMainViewController.xib in Resources */,
 				25ADC3CA14E9683D001D7543 /* ZBFlipsideViewController.xib in Resources */,
+				25ADC3E814EBF73A001D7543 /* tile.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

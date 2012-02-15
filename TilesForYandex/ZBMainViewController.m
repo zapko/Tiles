@@ -37,7 +37,11 @@
 															  verticalTilesNum:kTileNum];
 	tileScrollView.tileSize		= CGSizeMake(kTileSize, kTileSize);
 	tileScrollView.dataSource	= self;
-	tileScrollView.delegate		= self;
+	tileScrollView.tileDelegate	= self;
+	
+	tileScrollView.multipleTouchEnabled = YES;
+	tileScrollView.minimumZoomScale = 0.5;
+	tileScrollView.maximumZoomScale = 2.0;
 	
 	[self.view addSubview:tileScrollView];
 
@@ -78,13 +82,13 @@
 
 #pragma mark ZBTilesScrollView data source
 
-- (UIImage *)imageForTileAtIndexPath:(NSIndexPath *)indexPath
+- (UIImage *)imageForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
 {
 		// TODO: implement
-	return nil;
+	return [UIImage imageNamed:@"tile.png"];
 }
 
-- (void)imageNoLongerNeededForTileAtIndexPath:(NSIndexPath *)indexPath
+- (void)imageNoLongerNeededForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
 {
 		// TODO: implement
 	return;

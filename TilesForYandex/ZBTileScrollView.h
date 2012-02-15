@@ -13,8 +13,8 @@
 @protocol ZBTileScrollViewDataSource <NSObject>
 
 @required
-- (UIImage*) imageForTileAtIndexPath:				(NSIndexPath *)indexPath;
-- (void)	 imageNoLongerNeededForTileAtIndexPath:	(NSIndexPath *)indexPath;
+- (UIImage*) imageForTileAtHorIndex:				(NSUInteger)horIndex	verIndex:(NSUInteger)verIndex;
+- (void)	 imageNoLongerNeededForTileAtHorIndex:	(NSUInteger)horIndex	verIndex:(NSUInteger)verIndex;
 
 @end
 
@@ -22,8 +22,8 @@
 @protocol ZBTileScrollViewDelegate <NSObject>
 
 @optional
-- (void)tileScrollViewDidScroll:(ZBTileScrollView *)scrollView;
-- (void)tileScrollViewDidZoom:	(ZBTileScrollView *)scrollView;
+- (void) tileScrollViewDidScroll:	(ZBTileScrollView *)scrollView;
+- (void) tileScrollViewDidZoom:		(ZBTileScrollView *)scrollView;
 	// Retranslate other methos from UIScrollViewDelegate that we'll need
 
 @end
@@ -37,14 +37,16 @@
 }
 
 @property (nonatomic, assign)	id<ZBTileScrollViewDataSource>	dataSource;
-@property (nonatomic, assign)	id<ZBTileScrollViewDelegate>	delegate;
+@property (nonatomic, assign)	id<ZBTileScrollViewDelegate>	tileDelegate;
+	// WARNING: Using of delegate property is forbidden
 
 @property (nonatomic, assign)	CGSize		tileSize;
 @property (nonatomic, readonly) NSUInteger	horTilesNum;
 @property (nonatomic, readonly) NSUInteger	verTilesNum;
 
 - (id)		initWithFrame:(CGRect)frame horizontalTilesNum:(NSUInteger)horNum verticalTilesNum:(NSUInteger)verNum;
-- (void)	setImageForTileAtIndexPath:(NSIndexPath *)indexPath;
+
+- (void)	setImageForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex;
 
 
 @end

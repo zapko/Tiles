@@ -9,7 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "ZBTileScrollView.h"
 
-
+#define IsStub(obj) ((NSNull *)obj == [NSNull null])
 
 @interface ZBTileScrollView()
 
@@ -17,6 +17,8 @@
 
 - (CALayer *)dequeueReusableTile;
 - (void)	 queueReusableTile:(CALayer *)tile;
+
+- (CALayer *)tileForHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex;
 
 @end
 
@@ -27,7 +29,7 @@
 
 @synthesize reusableQueue = reusableQueue_;
 
-@synthesize dataSource = dataSource_, delegate = delegate_;
+@synthesize dataSource = dataSource_, tileDelegate = tileDelegate_;
 
 @synthesize tileSize = tileSize_;
 @synthesize horTilesNum = horTilesNum_, verTilesNum = verTilesNum_;
@@ -36,12 +38,12 @@
 
 #pragma mark - Initialization
 
-- (id)init
+- (id) init
 {
 	return [self initWithFrame:CGRectZero];
 }
 
-- (id)initWithFrame:(CGRect)frame
+- (id) initWithFrame:(CGRect)frame
 {
 	return [self initWithFrame:frame horizontalTilesNum:10 verticalTilesNum:10];
 }
@@ -78,9 +80,14 @@
 	return self;
 }
 
+- (void)setDelegate:(id<UIScrollViewDelegate>)delegate
+{
+	NSLog(@"WARNING: Your are trying to use forbidden \"delegate\" property");
+}
+
 #pragma mark Memory management
 
-- (void)dealloc
+- (void) dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 
@@ -90,7 +97,7 @@
 	[super dealloc];
 }
 
-- (void)respondToMemoryWarning
+- (void) respondToMemoryWarning
 {
 	self.reusableQueue = nil;
 		//TODO: check possible ways to free memory
@@ -108,25 +115,24 @@
 	return reusableQueue_; 	
 }
 
-- (CALayer *)dequeueReusableTile
+- (CALayer *) dequeueReusableTile
 {
 	CALayer *tile = [[self.reusableQueue anyObject] autorelease];
-	[self.reusableQueue removeObject:tile];
+
+	if (tile) { [self.reusableQueue removeObject:tile]; }
 	
 	return tile;
 }
 
-- (void)queueReusableTile:(CALayer *)tile
+- (void) queueReusableTile:(CALayer *)tile
 {
-	[tile retain];
-	[tile removeFromSuperlayer];
 	[self.reusableQueue addObject:tile];
-	[tile release];
+	[tile removeFromSuperlayer];
 }
 
 #pragma mark Size manipulations
 
-- (void)layoutSubviews
+- (void) layoutSubviews
 {
 	CGFloat tileWidth	= tileSize_.width;
 	CGFloat tileHeight	= tileSize_.height;
@@ -138,7 +144,8 @@
 		for (NSUInteger j = 0; j < verTilesNum_; ++j)
 		{
 			CALayer *layer = [tilesColumn objectAtIndex:j];
-			if ((NSNull *)layer == [NSNull null]) { continue; }
+
+			if (IsStub(layer)) { continue; }
 
 			layer.frame = CGRectMake(tileWidth*i, tileHeight*j, tileWidth, tileHeight);
 		}
@@ -157,7 +164,7 @@
 	[self setNeedsLayout];
 }
 
-- (void)setContentSize:(CGSize)contentSize
+- (void) setContentSize:(CGSize)contentSize
 {
 	[self setTileSize:CGSizeMake(contentSize.width	/ (CGFloat)horTilesNum_, 
 								 contentSize.height / (CGFloat)verTilesNum_)];
@@ -166,28 +173,92 @@
 
 #pragma mark Tile manipulation
 
-- (void) setImageForTileAtIndexPath:(NSIndexPath *)indexPath
+- (CALayer *) tileForHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
 {
-		//TODO: check whether tile is visible
+	if (horIndex >= horTilesNum_) { return nil; } // Bounds check
+	if (verIndex >= verTilesNum_) { return nil; }
+	
+	CALayer * tile = [self dequeueReusableTile]; 
+		
+	if (!tile) { tile = [[[CALayer alloc] init] autorelease]; }
+		
+	tile.contents = (id)[[dataSource_ imageForTileAtHorIndex:horIndex verIndex:verIndex] CGImage];
+
+	return tile;
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+- (void) setImageForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
+{
+	if (horIndex >= horTilesNum_) { return; } // Bounds check
+	if (verIndex >= verTilesNum_) { return; }
+
+	CALayer * tile = [[visibleTiles_ objectAtIndex:horIndex] objectAtIndex:verIndex];
+
+	if (IsStub(tile)) { return; }												// If tile is not visible return
+
+	tile.contents = (id)[[dataSource_ imageForTileAtHorIndex:horIndex verIndex:verIndex] CGImage];	// else set appropriate image
+}
+
+- (void) scrollViewDidScroll:(UIScrollView *)scrollView
 {
 	assert(scrollView == self);
 	
-	if (delegate_ && [delegate_ respondsToSelector:@selector(tileScrollViewDidScroll::)]) 
+	CGRect bounds = self.bounds;
+	
+	NSUInteger firstHorVisibleIndex = MAX( CGRectGetMinX(bounds) / tileSize_.width,  0 );
+	NSUInteger firstVerVisibleIndex = MAX( CGRectGetMinY(bounds) / tileSize_.height, 0 );
+	
+	NSUInteger lastHorVisibleIndex	= MIN( CGRectGetMaxX(bounds) / tileSize_.width,  horTilesNum_ );
+	NSUInteger lastVerVisibleIndex	= MIN( CGRectGetMaxY(bounds) / tileSize_.height, verTilesNum_ );
+	
+	for (NSUInteger i = 0; i < horTilesNum_; ++i)
 	{
-		[delegate_ tileScrollViewDidScroll:self];
+		NSMutableArray *column = [visibleTiles_ objectAtIndex:i];
+		for (NSUInteger j = 0; j < verTilesNum_; ++j)
+		{
+			BOOL tileIsVisible = (((i >= firstHorVisibleIndex) && (i <= lastHorVisibleIndex)) &&
+								  ((j >= firstVerVisibleIndex) && (j <= lastVerVisibleIndex)));
+			
+			CALayer* tileLayer = [column objectAtIndex:j];
+			
+			if (IsStub(tileLayer))
+			{
+				if (!tileIsVisible) { continue; }
+
+				tileLayer = [self tileForHorIndex:i verIndex:j];
+				[column replaceObjectAtIndex:j withObject:tileLayer];
+				
+				tileLayer.frame = CGRectMake(i*tileSize_.width, 
+											 j*tileSize_.height, 
+											 tileSize_.width, 
+											 tileSize_.height);
+				[self.layer addSublayer:tileLayer];
+			}
+			else
+			{
+				if (tileIsVisible) { continue; }
+
+				[self queueReusableTile:tileLayer];
+				[column replaceObjectAtIndex:j withObject:[NSNull null]];
+					
+				[dataSource_ imageNoLongerNeededForTileAtHorIndex:i verIndex:j];
+			}
+		}
+	}
+		
+	if (tileDelegate_ && [tileDelegate_ respondsToSelector:@selector(tileScrollViewDidScroll::)]) 
+	{
+		[tileDelegate_ tileScrollViewDidScroll:self];
 	}
 }
 
-- (void)scrollViewDidZoom:(UIScrollView *)scrollView
+- (void) scrollViewDidZoom:(UIScrollView *)scrollView
 {
 	assert(scrollView == self);
 	
-	if (delegate_ && [delegate_ respondsToSelector:@selector(tileScrollViewDidZoom:)])
+	if (tileDelegate_ && [tileDelegate_ respondsToSelector:@selector(tileScrollViewDidZoom:)])
 	{
-		[delegate_ tileScrollViewDidZoom:self];
+		[tileDelegate_ tileScrollViewDidZoom:self];
 	}
 }
 
