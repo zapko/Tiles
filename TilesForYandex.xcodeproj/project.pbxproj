@@ -17,6 +17,7 @@
 		25ADC3C414E9683D001D7543 /* ZBFlipsideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25ADC3C314E9683D001D7543 /* ZBFlipsideViewController.m */; };
 		25ADC3C714E9683D001D7543 /* ZBMainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25ADC3C514E9683D001D7543 /* ZBMainViewController.xib */; };
 		25ADC3CA14E9683D001D7543 /* ZBFlipsideViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25ADC3C814E9683D001D7543 /* ZBFlipsideViewController.xib */; };
+		25ADC3E614EB0FA9001D7543 /* ZBTileScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25ADC3E514EB0FA9001D7543 /* ZBTileScrollView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,8 @@
 		25ADC3C314E9683D001D7543 /* ZBFlipsideViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZBFlipsideViewController.m; sourceTree = "<group>"; };
 		25ADC3C614E9683D001D7543 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ZBMainViewController.xib; sourceTree = "<group>"; };
 		25ADC3C914E9683D001D7543 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ZBFlipsideViewController.xib; sourceTree = "<group>"; };
+		25ADC3E414EB0FA9001D7543 /* ZBTileScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBTileScrollView.h; sourceTree = "<group>"; };
+		25ADC3E514EB0FA9001D7543 /* ZBTileScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBTileScrollView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +87,8 @@
 			children = (
 				25ADC3BC14E9683D001D7543 /* ZBAppDelegate.h */,
 				25ADC3BD14E9683D001D7543 /* ZBAppDelegate.m */,
+				25ADC3E414EB0FA9001D7543 /* ZBTileScrollView.h */,
+				25ADC3E514EB0FA9001D7543 /* ZBTileScrollView.m */,
 				25ADC3BF14E9683D001D7543 /* ZBMainViewController.h */,
 				25ADC3C014E9683D001D7543 /* ZBMainViewController.m */,
 				25ADC3C214E9683D001D7543 /* ZBFlipsideViewController.h */,
@@ -174,6 +179,7 @@
 				25ADC3BE14E9683D001D7543 /* ZBAppDelegate.m in Sources */,
 				25ADC3C114E9683D001D7543 /* ZBMainViewController.m in Sources */,
 				25ADC3C414E9683D001D7543 /* ZBFlipsideViewController.m in Sources */,
+				25ADC3E614EB0FA9001D7543 /* ZBTileScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,6 +262,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TilesForYandex/TilesForYandex-Prefix.pch";
 				INFOPLIST_FILE = "TilesForYandex/TilesForYandex-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -267,6 +274,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TilesForYandex/TilesForYandex-Prefix.pch";
 				INFOPLIST_FILE = "TilesForYandex/TilesForYandex-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

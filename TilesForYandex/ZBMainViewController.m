@@ -6,18 +6,15 @@
 //  Copyright (c) 2012 Zababako. All rights reserved.
 //
 
-#define kTileHorSize 128
-#define kTileVerSize 128
-
-#define kTileHorNum 100
-#define kTileVerNum 100
+#define kTileSize	128
+#define kTileNum	100
 
 
 #import "ZBMainViewController.h"
 
 @implementation ZBMainViewController
-@synthesize scrollView;
 
+#pragma mark - Memory management
 
 - (void)didReceiveMemoryWarning
 {
@@ -25,20 +22,31 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
+- (void)dealloc {
+	[super dealloc];
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+	
+	ZBTileScrollView *tileScrollView = [[ZBTileScrollView alloc] initWithFrame:self.view.bounds 
+															horizontalTilesNum:kTileNum 
+															  verticalTilesNum:kTileNum];
+	tileScrollView.tileSize		= CGSizeMake(kTileSize, kTileSize);
+	tileScrollView.dataSource	= self;
+	tileScrollView.delegate		= self;
+	
+	[self.view addSubview:tileScrollView];
+
+	[tileScrollView release];
 }
 
 - (void)viewDidUnload
 {
-	[self setScrollView:nil];
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -63,11 +71,33 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    // Return YES for supported orientations
 	return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
-#pragma mark - Flipside View
+#pragma mark - Behavior -
+
+#pragma mark ZBTilesScrollView data source
+
+- (UIImage *)imageForTileAtIndexPath:(NSIndexPath *)indexPath
+{
+		// TODO: implement
+	return nil;
+}
+
+- (void)imageNoLongerNeededForTileAtIndexPath:(NSIndexPath *)indexPath
+{
+		// TODO: implement
+	return;
+}
+
+#pragma mark Scroll delegate
+
+- (void)tileScrollViewDidScroll:(UIScrollView *)scrollView
+{
+	NSLog(@"Scroll delegate from view controller");
+}
+
+#pragma mark Flipside View
 
 - (void)flipsideViewControllerDidFinish:(ZBFlipsideViewController *)controller
 {
@@ -82,8 +112,4 @@
     [self presentModalViewController:controller animated:YES];
 }
 
-- (void)dealloc {
-	[scrollView release];
-	[super dealloc];
-}
 @end
