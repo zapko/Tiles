@@ -12,7 +12,45 @@
 
 #import "ZBMainViewController.h"
 
+@interface ZBMainViewController()
+
+@property (nonatomic, retain) NSMutableSet *		loadedImages;
+@property (nonatomic, retain) ZBTileScrollView *	tileScrollView;
+
+@end
+
+
+
 @implementation ZBMainViewController
+
+@synthesize loadedImages	= loadedImages_;
+@synthesize tileScrollView	= tileScrollView_;
+
+- (NSMutableSet *)loadedImages
+{
+	if (!loadedImages_)
+	{
+		loadedImages_ = [[NSMutableSet alloc] init];
+	}
+	return loadedImages_;
+}
+
+- (ZBTileScrollView *)tileScrollView
+{
+	if (!tileScrollView_)
+	{
+		tileScrollView_ = [[ZBTileScrollView alloc] initWithFrame:CGRectZero
+											   horizontalTilesNum:kTileNum 
+												 verticalTilesNum:kTileNum];
+		tileScrollView_.tileSize	= CGSizeMake(kTileSize, kTileSize);
+		tileScrollView_.dataSource	= self;
+		
+		tileScrollView_.multipleTouchEnabled = YES;
+		tileScrollView_.minimumZoomScale = 0.5;
+		tileScrollView_.maximumZoomScale = 2.0;
+	}
+	return tileScrollView_;
+}
 
 #pragma mark - Memory management
 
@@ -22,7 +60,9 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
-- (void)dealloc {
+- (void)dealloc 
+{
+	[loadedImages_ release];
 	[super dealloc];
 }
 
@@ -32,24 +72,20 @@
 {
     [super viewDidLoad];
 	
-	ZBTileScrollView *tileScrollView = [[ZBTileScrollView alloc] initWithFrame:self.view.bounds 
-															horizontalTilesNum:kTileNum 
-															  verticalTilesNum:kTileNum];
-	tileScrollView.tileSize		= CGSizeMake(kTileSize, kTileSize);
-	tileScrollView.dataSource	= self;
-	tileScrollView.tileDelegate	= self;
-	
-	tileScrollView.multipleTouchEnabled = YES;
-	tileScrollView.minimumZoomScale = 0.5;
-	tileScrollView.maximumZoomScale = 2.0;
-	
-	[self.view addSubview:tileScrollView];
+	UIView*				view			= self.view;
+	ZBTileScrollView*	tileScrollView	= self.tileScrollView;
 
-	[tileScrollView release];
+	tileScrollView.frame = view.bounds;
+		
+	[view addSubview:		tileScrollView];
+	[view sendSubviewToBack:tileScrollView];
 }
 
 - (void)viewDidUnload
 {
+	[tileScrollView_ release];
+	tileScrollView_ = nil;
+	
     [super viewDidUnload];
 }
 
@@ -85,20 +121,42 @@
 - (UIImage *)imageForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
 {
 		// TODO: implement
-	return [UIImage imageNamed:@"tile.png"];
+	NSString* imageSignature = [NSString stringWithFormat:@"%d,%d", horIndex, verIndex];
+
+	if (![self.loadedImages containsObject:imageSignature])
+	{
+		[self performSelector:@selector(imageLoaded:) withObject:imageSignature afterDelay:1];
+
+		return [UIImage imageNamed:@"placeholder.png"];
+	}
+	else
+	{
+		return [UIImage imageNamed:@"tile.png"];
+	}
+}
+
+- (void)imageLoaded:(NSString *)imageSignature
+{
+		// TODO: implement
+	[self.loadedImages addObject:imageSignature];
+	
+	if (!tileScrollView_) { return; }
+	
+	NSArray* components = [imageSignature componentsSeparatedByString:@","];
+	assert([components count] == 2);
+	NSUInteger horIndex = [[components objectAtIndex:0] integerValue];
+	NSUInteger verIndex = [[components objectAtIndex:1] integerValue];
+	
+	[self.tileScrollView setImageForTileAtHorIndex:horIndex verIndex:verIndex];
 }
 
 - (void)imageNoLongerNeededForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
 {
 		// TODO: implement
+	NSString* imageSignature = [NSString stringWithFormat:@"%d,%d", horIndex, verIndex];
+	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(imageLoaded:) object:imageSignature];
+	
 	return;
-}
-
-#pragma mark Scroll delegate
-
-- (void)tileScrollViewDidScroll:(UIScrollView *)scrollView
-{
-	NSLog(@"Scroll delegate from view controller");
 }
 
 #pragma mark Flipside View

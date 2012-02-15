@@ -19,25 +19,12 @@
 @end
 
 
-@protocol ZBTileScrollViewDelegate <NSObject>
-
-@optional
-- (void) tileScrollViewDidScroll:	(ZBTileScrollView *)scrollView;
-- (void) tileScrollViewDidZoom:		(ZBTileScrollView *)scrollView;
-	// Retranslate other methos from UIScrollViewDelegate that we'll need
-
-@end
-
-
 @interface ZBTileScrollView : UIScrollView <UIScrollViewDelegate>
 {
-	NSUInteger prevVisibleHorIndex_;
-	NSUInteger prevVisibleVerIndex_;
 	NSArray*   visibleTiles_;
 }
 
 @property (nonatomic, assign)	id<ZBTileScrollViewDataSource>	dataSource;
-@property (nonatomic, assign)	id<ZBTileScrollViewDelegate>	tileDelegate;
 	// WARNING: Using of delegate property is forbidden
 
 @property (nonatomic, assign)	CGSize		tileSize;

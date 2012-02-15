@@ -29,7 +29,7 @@
 
 @synthesize reusableQueue = reusableQueue_;
 
-@synthesize dataSource = dataSource_, tileDelegate = tileDelegate_;
+@synthesize dataSource = dataSource_;
 
 @synthesize tileSize = tileSize_;
 @synthesize horTilesNum = horTilesNum_, verTilesNum = verTilesNum_;
@@ -115,11 +115,15 @@
 	return reusableQueue_; 	
 }
 
-- (CALayer *) dequeueReusableTile
+- (CALayer*) dequeueReusableTile
 {
-	CALayer *tile = [[self.reusableQueue anyObject] autorelease];
+	CALayer* tile = [self.reusableQueue anyObject];
 
-	if (tile) { [self.reusableQueue removeObject:tile]; }
+	if (tile) 
+	{
+		[[tile retain] autorelease];
+		[self.reusableQueue removeObject:tile]; 
+	}
 	
 	return tile;
 }
@@ -202,14 +206,15 @@
 - (void) scrollViewDidScroll:(UIScrollView *)scrollView
 {
 	assert(scrollView == self);
+	[CATransaction setDisableActions:YES];
 	
 	CGRect bounds = self.bounds;
 	
-	NSUInteger firstHorVisibleIndex = MAX( CGRectGetMinX(bounds) / tileSize_.width,  0 );
-	NSUInteger firstVerVisibleIndex = MAX( CGRectGetMinY(bounds) / tileSize_.height, 0 );
+	NSUInteger firstHorVisibleIndex = MAX( CGRectGetMinX(bounds) / tileSize_.width  - 1, 0 );
+	NSUInteger firstVerVisibleIndex = MAX( CGRectGetMinY(bounds) / tileSize_.height - 1, 0 );
 	
-	NSUInteger lastHorVisibleIndex	= MIN( CGRectGetMaxX(bounds) / tileSize_.width,  horTilesNum_ );
-	NSUInteger lastVerVisibleIndex	= MIN( CGRectGetMaxY(bounds) / tileSize_.height, verTilesNum_ );
+	NSUInteger lastHorVisibleIndex	= MIN( CGRectGetMaxX(bounds) / tileSize_.width  + 1, horTilesNum_ );
+	NSUInteger lastVerVisibleIndex	= MIN( CGRectGetMaxY(bounds) / tileSize_.height + 1, verTilesNum_ );
 	
 	for (NSUInteger i = 0; i < horTilesNum_; ++i)
 	{
@@ -226,10 +231,12 @@
 				if (!tileIsVisible) { continue; }
 
 				tileLayer = [self tileForHorIndex:i verIndex:j];
+				if (!tileLayer) { continue; }
+				
 				[column replaceObjectAtIndex:j withObject:tileLayer];
 				
-				tileLayer.frame = CGRectMake(i*tileSize_.width, 
-											 j*tileSize_.height, 
+				tileLayer.frame = CGRectMake(tileSize_.width  * i, 
+											 tileSize_.height * j, 
 											 tileSize_.width, 
 											 tileSize_.height);
 				[self.layer addSublayer:tileLayer];
@@ -245,21 +252,13 @@
 			}
 		}
 	}
-		
-	if (tileDelegate_ && [tileDelegate_ respondsToSelector:@selector(tileScrollViewDidScroll::)]) 
-	{
-		[tileDelegate_ tileScrollViewDidScroll:self];
-	}
+	
+	[CATransaction setDisableActions:NO];
 }
 
 - (void) scrollViewDidZoom:(UIScrollView *)scrollView
 {
-	assert(scrollView == self);
-	
-	if (tileDelegate_ && [tileDelegate_ respondsToSelector:@selector(tileScrollViewDidZoom:)])
-	{
-		[tileDelegate_ tileScrollViewDidZoom:self];
-	}
+	assert(scrollView == self);	
 }
 
 #pragma mark Scroll delegate methods (the rest of)
