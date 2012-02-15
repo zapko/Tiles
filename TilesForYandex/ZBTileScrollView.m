@@ -15,10 +15,12 @@
 
 @property (nonatomic, retain) NSMutableSet* reusableQueue;
 
-- (CALayer *)dequeueReusableTile;
-- (void)	 queueReusableTile:(CALayer *)tile;
+- (CALayer *) dequeueReusableTile;
+- (void)	  queueReusableTile:(CALayer *)tile;
 
-- (CALayer *)tileForHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex;
+- (CALayer *) tileForHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex;
+
+- (void) bringTilesIntoAppropriateState;
 
 @end
 
@@ -69,20 +71,13 @@
 	}
 	visibleTiles_ = [[NSArray alloc] initWithArray:visibleTilesColumnsRow];
 	[visibleTilesColumnsRow release];
-	
-	[super setDelegate:self];
-	
+		
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(respondToMemoryWarning) 
 												 name:UIApplicationDidReceiveMemoryWarningNotification 
 											   object:nil];
 	
 	return self;
-}
-
-- (void)setDelegate:(id<UIScrollViewDelegate>)delegate
-{
-	NSLog(@"WARNING: Your are trying to use forbidden \"delegate\" property");
 }
 
 #pragma mark Memory management
@@ -136,8 +131,40 @@
 
 #pragma mark Size manipulations
 
+- (void) setFrame:(CGRect)frame
+{
+	BOOL sizeChanged = !CGSizeEqualToSize(frame.size, self.frame.size);
+
+	[super setFrame:frame];
+	
+	if (sizeChanged) 
+	{
+		tilesShouldBeRelayouted_ = YES;
+		[self bringTilesIntoAppropriateState]; 
+	}
+}
+
+- (void) setBounds:(CGRect)bounds
+{
+	CGRect oldBounds = self.bounds;
+	
+	BOOL changed		=			 !CGRectEqualToRect(bounds,			oldBounds);
+	BOOL sizeChanged	= changed && !CGSizeEqualToSize(bounds.size,	oldBounds.size);
+
+	[super setBounds:bounds];
+	
+	if (changed) 
+	{ 
+		[self bringTilesIntoAppropriateState]; 
+
+		if (sizeChanged) { tilesShouldBeRelayouted_ = YES; }
+	}
+}
+
 - (void) layoutSubviews
 {
+	if (!tilesShouldBeRelayouted_) { return; }
+
 	CGFloat tileWidth	= tileSize_.width;
 	CGFloat tileHeight	= tileSize_.height;
 	
@@ -154,6 +181,8 @@
 			layer.frame = CGRectMake(tileWidth*i, tileHeight*j, tileWidth, tileHeight);
 		}
 	}
+	
+	tilesShouldBeRelayouted_ = NO;
 }
 
 - (void) setTileSize:(CGSize)tileSize
@@ -165,6 +194,7 @@
 	[super setContentSize:CGSizeMake(tileSize_.width  * horTilesNum_, 
 									 tileSize_.height * verTilesNum_)];
 	
+	tilesShouldBeRelayouted_ = YES;
 	[self setNeedsLayout];
 }
 
@@ -203,35 +233,37 @@
 	tile.contents = (id)[[dataSource_ imageForTileAtHorIndex:horIndex verIndex:verIndex] CGImage];	// else set appropriate image
 }
 
-- (void) scrollViewDidScroll:(UIScrollView *)scrollView
+- (void) bringTilesIntoAppropriateState
 {
-	assert(scrollView == self);
 	[CATransaction setDisableActions:YES];
 	
 	CGRect bounds = self.bounds;
 	
+		// Determinig indexes of visible tiles
 	NSUInteger firstHorVisibleIndex = MAX( CGRectGetMinX(bounds) / tileSize_.width  - 1, 0 );
 	NSUInteger firstVerVisibleIndex = MAX( CGRectGetMinY(bounds) / tileSize_.height - 1, 0 );
 	
 	NSUInteger lastHorVisibleIndex	= MIN( CGRectGetMaxX(bounds) / tileSize_.width  + 1, horTilesNum_ );
 	NSUInteger lastVerVisibleIndex	= MIN( CGRectGetMaxY(bounds) / tileSize_.height + 1, verTilesNum_ );
 	
+		// Going through all tiles
 	for (NSUInteger i = 0; i < horTilesNum_; ++i)
 	{
 		NSMutableArray *column = [visibleTiles_ objectAtIndex:i];
 		for (NSUInteger j = 0; j < verTilesNum_; ++j)
 		{
+				// If tile is visible it should be put into visibleTiles_, otherwise it should be released
 			BOOL tileIsVisible = (((i >= firstHorVisibleIndex) && (i <= lastHorVisibleIndex)) &&
 								  ((j >= firstVerVisibleIndex) && (j <= lastVerVisibleIndex)));
 			
 			CALayer* tileLayer = [column objectAtIndex:j];
-			
-			if (IsStub(tileLayer))
-			{
-				if (!tileIsVisible) { continue; }
 
+			if (tileIsVisible)
+			{
+				if (!IsStub(tileLayer)) { continue; }
+				
 				tileLayer = [self tileForHorIndex:i verIndex:j];
-				if (!tileLayer) { continue; }
+				assert(tileLayer);
 				
 				[column replaceObjectAtIndex:j withObject:tileLayer];
 				
@@ -243,11 +275,11 @@
 			}
 			else
 			{
-				if (tileIsVisible) { continue; }
+				if (IsStub(tileLayer)) { continue; }
 
 				[self queueReusableTile:tileLayer];
 				[column replaceObjectAtIndex:j withObject:[NSNull null]];
-					
+				
 				[dataSource_ imageNoLongerNeededForTileAtHorIndex:i verIndex:j];
 			}
 		}
@@ -256,12 +288,21 @@
 	[CATransaction setDisableActions:NO];
 }
 
-- (void) scrollViewDidZoom:(UIScrollView *)scrollView
+- (void)reloadData
 {
-	assert(scrollView == self);	
+	for (NSUInteger i = 0; i < horTilesNum_; ++i)
+	{
+		NSMutableArray *column = [visibleTiles_ objectAtIndex:i];
+		for (NSUInteger j = 0; j < verTilesNum_; ++j)
+		{
+			CALayer *tileLayer = [column objectAtIndex:j];
+			
+			if (IsStub(tileLayer)) { continue; }
+			
+			[self queueReusableTile:tileLayer];
+			[column replaceObjectAtIndex:j withObject:[NSNull null]];
+		}
+	}
 }
-
-#pragma mark Scroll delegate methods (the rest of)
-
 
 @end

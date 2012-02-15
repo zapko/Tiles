@@ -21,11 +21,11 @@
 
 @interface ZBTileScrollView : UIScrollView <UIScrollViewDelegate>
 {
-	NSArray*   visibleTiles_;
+	NSArray*	visibleTiles_;
+	BOOL		tilesShouldBeRelayouted_;
 }
 
 @property (nonatomic, assign)	id<ZBTileScrollViewDataSource>	dataSource;
-	// WARNING: Using of delegate property is forbidden
 
 @property (nonatomic, assign)	CGSize		tileSize;
 @property (nonatomic, readonly) NSUInteger	horTilesNum;
@@ -34,6 +34,7 @@
 - (id)		initWithFrame:(CGRect)frame horizontalTilesNum:(NSUInteger)horNum verticalTilesNum:(NSUInteger)verNum;
 
 - (void)	setImageForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex;
+- (void)	reloadData;
 
 
 @end
