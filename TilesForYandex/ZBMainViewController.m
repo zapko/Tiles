@@ -46,7 +46,7 @@
 		tileScrollView_.dataSource	= self;
 		
 		tileScrollView_.multipleTouchEnabled = YES;
-		tileScrollView_.minimumZoomScale = 0.5;
+		tileScrollView_.minimumZoomScale = 1.0;
 		tileScrollView_.maximumZoomScale = 2.0;
 	}
 	return tileScrollView_;

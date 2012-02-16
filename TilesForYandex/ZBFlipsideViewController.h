@@ -19,6 +19,5 @@
 @property (assign, nonatomic) IBOutlet id <ZBFlipsideViewControllerDelegate> delegate;
 
 - (IBAction)done:(id)sender;
-@property (retain, nonatomic) IBOutlet UIScrollView *scrollView;
 
 @end

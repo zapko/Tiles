@@ -61,6 +61,7 @@
 	containerView_ = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
 	[self addSubview:containerView_];
 	[containerView_ release];
+	super.delegate = self;
 	
 	NSMutableArray *visibleTilesColumnsRow = [[NSMutableArray alloc] init];
 	for (NSUInteger i = 0; i < horTilesNum_; ++i)
@@ -279,7 +280,7 @@
 											 tileSize_.height * j, 
 											 tileSize_.width, 
 											 tileSize_.height);
-				[self.layer addSublayer:tileLayer];
+				[containerView_.layer addSublayer:tileLayer];
 			}
 			else
 			{
@@ -311,6 +312,11 @@
 			[column replaceObjectAtIndex:j withObject:[NSNull null]];
 		}
 	}
+}
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
+{
+	return containerView_;
 }
 
 @end
