@@ -9,6 +9,7 @@
 #import "ZBFlipsideViewController.h"
 
 @implementation ZBFlipsideViewController
+@synthesize scrollView = _scrollView;
 
 @synthesize delegate = _delegate;
 
@@ -23,11 +24,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+	
+	self.scrollView.contentSize = CGSizeMake(1000, 1000);
 	// Do any additional setup after loading the view, typically from a nib.
 }
 
 - (void)viewDidUnload
 {
+    [self setScrollView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -66,4 +70,8 @@
     [self.delegate flipsideViewControllerDidFinish:self];
 }
 
+- (void)dealloc {
+    [_scrollView release];
+    [super dealloc];
+}
 @end

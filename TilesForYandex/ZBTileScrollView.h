@@ -23,6 +23,7 @@
 {
 	NSArray*	visibleTiles_;
 	BOOL		tilesShouldBeRelayouted_;
+	UIView*		containerView_;
 }
 
 @property (nonatomic, assign)	id<ZBTileScrollViewDataSource>	dataSource;

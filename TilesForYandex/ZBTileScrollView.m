@@ -20,7 +20,7 @@
 
 - (CALayer *) tileForHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex;
 
-- (void) bringTilesIntoAppropriateState;
+- (void)	  bringTilesIntoAppropriateState;
 
 @end
 
@@ -57,6 +57,10 @@
 	
 	horTilesNum_ = horNum;
 	verTilesNum_ = verNum;
+	
+	containerView_ = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
+	[self addSubview:containerView_];
+	[containerView_ release];
 	
 	NSMutableArray *visibleTilesColumnsRow = [[NSMutableArray alloc] init];
 	for (NSUInteger i = 0; i < horTilesNum_; ++i)
@@ -163,6 +167,8 @@
 
 - (void) layoutSubviews
 {
+	[super layoutSubviews];
+	
 	if (!tilesShouldBeRelayouted_) { return; }
 
 	CGFloat tileWidth	= tileSize_.width;
@@ -191,8 +197,10 @@
 	
 	tileSize_ = tileSize;
 	
-	[super setContentSize:CGSizeMake(tileSize_.width  * horTilesNum_, 
-									 tileSize_.height * verTilesNum_)];
+	CGSize contentSize = CGSizeMake(tileSize_.width  * horTilesNum_, 
+									tileSize_.height * verTilesNum_);
+	[super setContentSize:contentSize];
+	containerView_.frame = CGRectMake(0, 0, contentSize.width, contentSize.height);
 	
 	tilesShouldBeRelayouted_ = YES;
 	[self setNeedsLayout];
