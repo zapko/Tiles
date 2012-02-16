@@ -21,6 +21,9 @@
 		25ADC3E814EBF73A001D7543 /* tile.png in Resources */ = {isa = PBXBuildFile; fileRef = 25ADC3E714EBF73A001D7543 /* tile.png */; };
 		25ADC3EA14EBFC6A001D7543 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25ADC3E914EBFC6A001D7543 /* QuartzCore.framework */; };
 		25ADC3EC14EC17CA001D7543 /* placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 25ADC3EB14EC17CA001D7543 /* placeholder.png */; };
+		25ADC3F814EC8D7E001D7543 /* DownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 25ADC3F714EC8D7E001D7543 /* DownloadManager.m */; };
+		25ADC3FB14EC8D95001D7543 /* Downloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 25ADC3FA14EC8D95001D7543 /* Downloader.m */; };
+		25ADC3FE14EC8DAC001D7543 /* DownloadItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 25ADC3FD14EC8DAC001D7543 /* DownloadItem.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +48,12 @@
 		25ADC3E714EBF73A001D7543 /* tile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tile.png; sourceTree = "<group>"; };
 		25ADC3E914EBFC6A001D7543 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		25ADC3EB14EC17CA001D7543 /* placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = placeholder.png; sourceTree = "<group>"; };
+		25ADC3F614EC8D7E001D7543 /* DownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadManager.h; sourceTree = "<group>"; };
+		25ADC3F714EC8D7E001D7543 /* DownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadManager.m; sourceTree = "<group>"; };
+		25ADC3F914EC8D95001D7543 /* Downloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Downloader.h; sourceTree = "<group>"; };
+		25ADC3FA14EC8D95001D7543 /* Downloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Downloader.m; sourceTree = "<group>"; };
+		25ADC3FC14EC8DAC001D7543 /* DownloadItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadItem.h; sourceTree = "<group>"; };
+		25ADC3FD14EC8DAC001D7543 /* DownloadItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadItem.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,7 +74,6 @@
 		25ADC39E14E9683C001D7543 = {
 			isa = PBXGroup;
 			children = (
-				25ADC3E914EBFC6A001D7543 /* QuartzCore.framework */,
 				25ADC3B314E9683C001D7543 /* TilesForYandex */,
 				25ADC3AC14E9683C001D7543 /* Frameworks */,
 				25ADC3AA14E9683C001D7543 /* Products */,
@@ -85,6 +93,7 @@
 			children = (
 				25ADC3AD14E9683C001D7543 /* UIKit.framework */,
 				25ADC3AF14E9683C001D7543 /* Foundation.framework */,
+				25ADC3E914EBFC6A001D7543 /* QuartzCore.framework */,
 				25ADC3B114E9683C001D7543 /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
@@ -95,6 +104,7 @@
 			children = (
 				25ADC3BC14E9683D001D7543 /* ZBAppDelegate.h */,
 				25ADC3BD14E9683D001D7543 /* ZBAppDelegate.m */,
+				25ADC3F514EC8D5C001D7543 /* Downloading */,
 				25ADC3E414EB0FA9001D7543 /* ZBTileScrollView.h */,
 				25ADC3E514EB0FA9001D7543 /* ZBTileScrollView.m */,
 				25ADC3BF14E9683D001D7543 /* ZBMainViewController.h */,
@@ -119,6 +129,19 @@
 				25ADC3BB14E9683D001D7543 /* TilesForYandex-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		25ADC3F514EC8D5C001D7543 /* Downloading */ = {
+			isa = PBXGroup;
+			children = (
+				25ADC3F614EC8D7E001D7543 /* DownloadManager.h */,
+				25ADC3F714EC8D7E001D7543 /* DownloadManager.m */,
+				25ADC3F914EC8D95001D7543 /* Downloader.h */,
+				25ADC3FA14EC8D95001D7543 /* Downloader.m */,
+				25ADC3FC14EC8DAC001D7543 /* DownloadItem.h */,
+				25ADC3FD14EC8DAC001D7543 /* DownloadItem.m */,
+			);
+			name = Downloading;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -192,6 +215,9 @@
 				25ADC3C114E9683D001D7543 /* ZBMainViewController.m in Sources */,
 				25ADC3C414E9683D001D7543 /* ZBFlipsideViewController.m in Sources */,
 				25ADC3E614EB0FA9001D7543 /* ZBTileScrollView.m in Sources */,
+				25ADC3F814EC8D7E001D7543 /* DownloadManager.m in Sources */,
+				25ADC3FB14EC8D95001D7543 /* Downloader.m in Sources */,
+				25ADC3FE14EC8DAC001D7543 /* DownloadItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

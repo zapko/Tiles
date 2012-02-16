@@ -57,12 +57,7 @@
 	
 	horTilesNum_ = horNum;
 	verTilesNum_ = verNum;
-	
-	containerView_ = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
-	[self addSubview:containerView_];
-	[containerView_ release];
-	super.delegate = self;
-	
+		
 	NSMutableArray *visibleTilesColumnsRow = [[NSMutableArray alloc] init];
 	for (NSUInteger i = 0; i < horTilesNum_; ++i)
 	{
@@ -198,10 +193,8 @@
 	
 	tileSize_ = tileSize;
 	
-	CGSize contentSize = CGSizeMake(tileSize_.width  * horTilesNum_, 
-									tileSize_.height * verTilesNum_);
-	[super setContentSize:contentSize];
-	containerView_.frame = CGRectMake(0, 0, contentSize.width, contentSize.height);
+	[super setContentSize:CGSizeMake(tileSize_.width  * horTilesNum_, 
+									 tileSize_.height * verTilesNum_)];
 	
 	tilesShouldBeRelayouted_ = YES;
 	[self setNeedsLayout];
@@ -280,7 +273,7 @@
 											 tileSize_.height * j, 
 											 tileSize_.width, 
 											 tileSize_.height);
-				[containerView_.layer addSublayer:tileLayer];
+				[self.layer addSublayer:tileLayer];
 			}
 			else
 			{
@@ -312,11 +305,6 @@
 			[column replaceObjectAtIndex:j withObject:[NSNull null]];
 		}
 	}
-}
-
-- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
-{
-	return containerView_;
 }
 
 @end

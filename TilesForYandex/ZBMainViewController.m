@@ -9,6 +9,7 @@
 #define kTileSize	128
 #define kTileNum	100
 
+static NSString* separator = @"_";
 
 #import "ZBMainViewController.h"
 
@@ -44,10 +45,6 @@
 												 verticalTilesNum:kTileNum];
 		tileScrollView_.tileSize	= CGSizeMake(kTileSize, kTileSize);
 		tileScrollView_.dataSource	= self;
-		
-		tileScrollView_.multipleTouchEnabled = YES;
-		tileScrollView_.minimumZoomScale = 1.0;
-		tileScrollView_.maximumZoomScale = 2.0;
 	}
 	return tileScrollView_;
 }
@@ -120,11 +117,12 @@
 
 - (UIImage *)imageForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
 {
-		// TODO: implement
-	NSString* imageSignature = [NSString stringWithFormat:@"%d,%d", horIndex, verIndex];
+	NSString* imageSignature = [NSString stringWithFormat:@"%d%@%d", horIndex, separator, verIndex];
 
+		// TODO: ask cache for the image
 	if (![self.loadedImages containsObject:imageSignature])
 	{
+			// TODO: ask loader to load an image
 		[self performSelector:@selector(imageLoaded:) withObject:imageSignature afterDelay:1];
 
 		return [UIImage imageNamed:@"placeholder.png"];
@@ -137,12 +135,12 @@
 
 - (void)imageLoaded:(NSString *)imageSignature
 {
-		// TODO: implement
+		// TODO: write loaded image to cache
 	[self.loadedImages addObject:imageSignature];
 	
 	if (!tileScrollView_) { return; }
 	
-	NSArray* components = [imageSignature componentsSeparatedByString:@","];
+	NSArray* components = [imageSignature componentsSeparatedByString:separator];
 	assert([components count] == 2);
 	NSUInteger horIndex = [[components objectAtIndex:0] integerValue];
 	NSUInteger verIndex = [[components objectAtIndex:1] integerValue];
@@ -152,8 +150,8 @@
 
 - (void)imageNoLongerNeededForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
 {
-		// TODO: implement
-	NSString* imageSignature = [NSString stringWithFormat:@"%d,%d", horIndex, verIndex];
+	NSString* imageSignature = [NSString stringWithFormat:@"%d%@%d", horIndex, separator, verIndex];
+		// TODO: cancel loader from loading image with this signature
 	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(imageLoaded:) object:imageSignature];
 	
 	return;
