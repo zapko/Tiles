@@ -27,7 +27,7 @@
 @property (nonatomic, assign)	id<DownloaderDelegate> delegate;
 
 @property (assign, readonly) NSThread*		workingThread;
-@property (retain, readonly) DownloadItem*	downloadingItem; // This is currently downloading item if it is nil then downloader is free
+@property (assign, readonly) NSUInteger		numberOfProcessingItems;
 
 - (void) processItem:(DownloadItem *)item;
 

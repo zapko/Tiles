@@ -16,10 +16,13 @@
 
 @end
 
+
+
 @implementation DownloadManager
 
-@synthesize queue	   = queue_;
-@synthesize downloader = downloader_;
+@synthesize queue							= queue_;
+@synthesize downloader						= downloader_;
+@synthesize numberOfSimultaneousLoadings	= numberOfSimultaneousLoadings_;
 
 - (id) init
 {
@@ -30,6 +33,8 @@
 											 selector:@selector(respondToMemoryWarning) 
 												 name:UIApplicationDidReceiveMemoryWarningNotification
 											   object:nil];
+
+	self.numberOfSimultaneousLoadings = 3;
 		
 	return self;
 }
@@ -73,8 +78,8 @@
 	if (queue_ && [queue_ count]) { return; }	
 	if (![queue_ count]) { self.queue = nil; }
 
-	if (downloader_ && downloader_.downloadingItem) { return; }	
-	if (!downloader_.downloadingItem) 
+	if (downloader_ && downloader_.numberOfProcessingItems) { return; }	
+	if (!downloader_.numberOfProcessingItems) 
 	{
 		[downloader_ stopDownloadThread];
 		[downloader_ release];
@@ -107,10 +112,11 @@
 	item.signature = signature;
 	
 	NSThread* workingThread = self.downloader.workingThread;
+	BOOL downloaderIsBusy = downloader_.numberOfProcessingItems >= self.numberOfSimultaneousLoadings;
 	
-	if (downloader_.downloadingItem || !workingThread) { [queue addObject:item]; }	// If Downloader is busy we add item to the queue
-	else {																			// otherwise start download immediately
-		NSLog(@"DownloadManager \"queueLoadingImage\": calling to process item %@", item.signature);
+	if (downloaderIsBusy || !workingThread) { [queue addObject:item]; }	// If Downloader is busy we add item to the queue
+	else {																// otherwise start download immediately
+//		NSLog(@"DownloadManager \"queueLoadingImage\": calling to process item %@", item.signature);
 		[downloader_ performSelector:@selector(processItem:) 
 							onThread:workingThread
 						  withObject:item
@@ -141,7 +147,7 @@
 {
 	if (!queue_ || ![queue_ count]) { return; }
 
-	if (self.downloader.downloadingItem) { return; }
+	if (self.downloader.numberOfProcessingItems >= self.numberOfSimultaneousLoadings) { return; }
 	
 	NSThread *workingThread = self.downloader.workingThread;
 
@@ -169,7 +175,7 @@
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName:ZBDownloadComplete object:self userInfo:userInfo];
 		
-		NSLog(@"DownloadManager \"itemWasProcessed\": calling to process item");
+//		NSLog(@"DownloadManager \"itemWasProcessed\": calling to process item");
 		[self startNextItemInQueue];
 	}
 	else
@@ -182,7 +188,7 @@
 {
 	if ([NSThread isMainThread]) 
 	{ 
-		NSLog(@"DownloadManager \"downloaderIsReady\": calling to process item");
+//		NSLog(@"DownloadManager \"downloaderIsReady\": calling to process item");
 		[self startNextItemInQueue]; 
 	}
 	else 

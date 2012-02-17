@@ -17,6 +17,8 @@ static NSString * ZBDownloadComplete = @"com.zababako.yandextiles.downloadComple
 
 @interface DownloadManager : NSObject <DownloaderDelegate>
 
+@property (nonatomic, assign) NSUInteger numberOfSimultaneousLoadings;
+
 - (void) queueLoadinImageForSignature:		(NSString *)signature;
 - (void) dequeueLoadingImageForSignature:	(NSString *)signature;
 

@@ -11,7 +11,7 @@
 @interface Downloader()
 
 @property (assign) NSThread*		workingThread;
-@property (retain) DownloadItem*	downloadingItem;
+@property (assign) NSUInteger		numberOfProcessingItems;
 
 @end
 
@@ -20,7 +20,7 @@
 @synthesize delegate = delegate_;
 
 @synthesize workingThread	= workingThread_;
-@synthesize downloadingItem	= downloadingItem_;
+@synthesize numberOfProcessingItems = numberOfProcessingItems_;
 
 - (void)launchDownloadThread
 {
@@ -52,14 +52,13 @@
 {
 	downloadThreadShouldStop_ = YES;
 	workingThread_ = nil;
+	numberOfProcessingItems_ = 0;
 }
 
 - (void) dealloc
 {
 	[self stopDownloadThread];
-	
-	self.downloadingItem = nil;
-	
+		
 	[super dealloc];
 }
 
@@ -69,8 +68,8 @@
 	
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
-	NSLog(@"Downloader \"processItem\": setting downloading item to %@", item.signature);
-	self.downloadingItem = item;
+//	NSLog(@"Downloader \"processItem\": setting downloading item to %@", item.signature);
+	self.numberOfProcessingItems += 1;
 	
 	item.delegate = self;
 	[item startDownload];
@@ -81,10 +80,9 @@
 - (void) downloadFinished:(DownloadItem *)sender
 {
 	assert( ![NSThread isMainThread] );
-	assert( sender == self.downloadingItem );
 
-	NSLog(@"Downloader \"downloadFinished\": setting downloading item from %@ to nil", self.downloadingItem.signature);
-	self.downloadingItem = nil;
+//	NSLog(@"Downloader \"downloadFinished\": setting downloading item from %@ to nil", self.downloadingItem.signature);
+	self.numberOfProcessingItems -= 1;
 	
 	if (delegate_ && [delegate_ respondsToSelector:@selector(itemWasProcessed:)])
 	{
