@@ -170,7 +170,7 @@
 		25ADC3A014E9683C001D7543 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = Zababako;
 			};
 			buildConfigurationList = 25ADC3A314E9683C001D7543 /* Build configuration list for PBXProject "TilesForYandex" */;
@@ -299,6 +299,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TilesForYandex/TilesForYandex-Prefix.pch";
+				GCC_VERSION = "";
 				INFOPLIST_FILE = "TilesForYandex/TilesForYandex-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -311,6 +312,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TilesForYandex/TilesForYandex-Prefix.pch";
+				GCC_VERSION = "";
 				INFOPLIST_FILE = "TilesForYandex/TilesForYandex-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -337,6 +339,7 @@
 				25ADC3CF14E9683D001D7543 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

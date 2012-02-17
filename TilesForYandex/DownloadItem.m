@@ -12,10 +12,11 @@
 
 @synthesize delegate = delegate_;
 
+@synthesize isReady   = isReady_;
 @synthesize url		  = url_;
 @synthesize signature = signature_;
 
-- (id)initWithURL:(NSString *)url
+- (id) initWithURL:(NSString *)url
 {
 	self = [super init];
 	if (!self) { return nil; }
@@ -34,9 +35,27 @@
 	[super dealloc];
 }
 
-- (void)startDownload
+- (void) startDownload
 {
 		// TODO: shedule connection on current loop
+	[self performSelector:@selector(downloadFinished) withObject:nil afterDelay:0.5];
 }
+
+- (NSString *) pathToDownloadedFile
+{
+		// TODO: return path of saved file
+	return (isReady_ ? [[NSBundle mainBundle] pathForResource:@"tile" ofType:@"png"] : nil);
+}
+
+	// Test part
+- (void) downloadFinished
+{
+	if (delegate_ && [delegate_ respondsToSelector:@selector(downloadFinished:)])
+	{
+		isReady_ = YES;
+		[delegate_ downloadFinished:self];
+	}
+}
+
 
 @end

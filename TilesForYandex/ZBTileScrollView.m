@@ -76,7 +76,7 @@
 											 selector:@selector(respondToMemoryWarning) 
 												 name:UIApplicationDidReceiveMemoryWarningNotification 
 											   object:nil];
-	
+		
 	return self;
 }
 
@@ -223,7 +223,7 @@
 	return tile;
 }
 
-- (void) setImageForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
+- (void) reloadImageForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
 {
 	if (horIndex >= horTilesNum_) { return; } // Bounds check
 	if (verIndex >= verTilesNum_) { return; }
@@ -237,6 +237,7 @@
 
 - (void) bringTilesIntoAppropriateState
 {
+	assert( [NSThread isMainThread] );
 	[CATransaction setDisableActions:YES];
 	
 	CGRect bounds = self.bounds;
@@ -273,7 +274,7 @@
 											 tileSize_.height * j, 
 											 tileSize_.width, 
 											 tileSize_.height);
-				[self.layer addSublayer:tileLayer];
+				[self.layer insertSublayer:tileLayer atIndex:0];
 			}
 			else
 			{

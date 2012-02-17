@@ -10,9 +10,6 @@
 #import "ZBTileScrollView.h"
 
 @interface ZBMainViewController : UIViewController <ZBFlipsideViewControllerDelegate, ZBTileScrollViewDataSource>
-{
-	ZBTileScrollView* tileScrollView_;
-}
 
 - (IBAction)showInfo:(id)sender;
 

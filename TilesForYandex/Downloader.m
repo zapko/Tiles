@@ -8,6 +8,13 @@
 
 #import "Downloader.h"
 
+@interface Downloader()
+
+@property (assign) NSThread*		workingThread;
+@property (retain) DownloadItem*	downloadingItem;
+
+@end
+
 @implementation Downloader
 
 @synthesize delegate = delegate_;
@@ -17,17 +24,26 @@
 
 - (void)launchDownloadThread
 {
-	assert( ![NSThread isMainThread] );
-	
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
+	assert( ![NSThread isMainThread] );
+
+	NSLog(@"Download thread started");
 	
+	workingThread_ =			 [NSThread	currentThread];
 	NSRunLoop* downloadRunLoop = [NSRunLoop currentRunLoop];
-	self.workingThread =		 [NSThread	currentThread];
 		
 	[downloadRunLoop addPort:[NSMachPort port] forMode:NSDefaultRunLoopMode];
-		
+	
+	if (delegate_ && [delegate_ respondsToSelector:@selector(downloaderIsReady)])
+	{
+		[delegate_ downloaderIsReady];
+	}
+			
 	while (!downloadThreadShouldStop_ && [downloadRunLoop runMode:NSDefaultRunLoopMode 
-													  beforeDate:[NSDate dateWithTimeIntervalSinceNow:3]]);
+													  beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]]);
+	
+	NSLog(@"Download thread ended");
 	
 	[pool release];
 }
@@ -35,6 +51,16 @@
 - (void)stopDownloadThread
 {
 	downloadThreadShouldStop_ = YES;
+	workingThread_ = nil;
+}
+
+- (void) dealloc
+{
+	[self stopDownloadThread];
+	
+	self.downloadingItem = nil;
+	
+	[super dealloc];
 }
 
 - (void)processItem:(DownloadItem *)item
@@ -43,27 +69,27 @@
 	
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
-	[downloadingItem_ release];
+	NSLog(@"Downloader \"processItem\": setting downloading item to %@", item.signature);
+	self.downloadingItem = item;
 	
-	downloadingItem_ = item;
-	[downloadingItem_ retain];
-	
-	downloadingItem_.delegate = self;
-	[downloadingItem_ startDownload];
+	item.delegate = self;
+	[item startDownload];
 	
 	[pool release];
 }
 
-- (void)downloadFinished:(DownloadItem *)sender
+- (void) downloadFinished:(DownloadItem *)sender
 {
-	assert( sender == downloadingItem_ );
+	assert( ![NSThread isMainThread] );
+	assert( sender == self.downloadingItem );
+
+	NSLog(@"Downloader \"downloadFinished\": setting downloading item from %@ to nil", self.downloadingItem.signature);
+	self.downloadingItem = nil;
 	
 	if (delegate_ && [delegate_ respondsToSelector:@selector(itemWasProcessed:)])
 	{
-		[delegate_ itemWasProcessed:downloadingItem_];
+		[delegate_ itemWasProcessed:sender];
 	}
-	[downloadingItem_ autorelease];
-	downloadingItem_ = nil;
 }
 
 @end

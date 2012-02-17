@@ -14,6 +14,7 @@
 
 @protocol DownloaderDelegate <NSObject>
 
+- (void)downloaderIsReady;
 - (void)itemWasProcessed:(DownloadItem *)item;
 
 @end
@@ -25,12 +26,12 @@
 
 @property (nonatomic, assign)	id<DownloaderDelegate> delegate;
 
-@property (assign)				NSThread*		workingThread;
-@property (nonatomic, readonly) DownloadItem*	downloadingItem;
+@property (assign, readonly) NSThread*		workingThread;
+@property (retain, readonly) DownloadItem*	downloadingItem; // This is currently downloading item if it is nil then downloader is free
 
 - (void) processItem:(DownloadItem *)item;
 
-- (void) launchDownloadThread;
-- (void) stopDownloadThread;
+- (void) launchDownloadThread; // Should be called in background
+- (void) stopDownloadThread;   // Can be called from anywhere
 
 @end

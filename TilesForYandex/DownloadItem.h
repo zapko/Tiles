@@ -22,10 +22,14 @@
 
 @property (nonatomic, assign)	id<DownloadItemDelegate> delegate;
 
+@property (nonatomic, readonly) BOOL isReady;
+
 @property (nonatomic, readonly) NSString* url;
 @property (nonatomic, copy)		NSString* signature;
 
 - (id) initWithURL:(NSString *)url;
 - (void) startDownload;
+
+- (NSString *)pathToDownloadedFile;
 
 @end

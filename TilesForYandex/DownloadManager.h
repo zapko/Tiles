@@ -7,6 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Downloader.h"
+
+static NSString * ZBDownloadComplete = @"com.zababako.yandextiles.downloadCompleteNotification";
 
 	// This is an interface class for downloads management.
 	// It operates on main thread and communicates with

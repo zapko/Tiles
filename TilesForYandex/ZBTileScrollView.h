@@ -33,7 +33,7 @@
 
 - (id)		initWithFrame:(CGRect)frame horizontalTilesNum:(NSUInteger)horNum verticalTilesNum:(NSUInteger)verNum;
 
-- (void)	setImageForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex;
+- (void)	reloadImageForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex;
 - (void)	reloadData;
 
 

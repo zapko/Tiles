@@ -7,13 +7,12 @@
 //
 
 #import "DownloadManager.h"
-#import "Downloader.h"
 #import "DownloadItem.h"
 
 @interface DownloadManager()
 
 @property (nonatomic, retain) NSMutableArray*	queue;
-@property (nonatomic, retain) Downloader*		downloader;
+@property (nonatomic, readonly) Downloader*		downloader;
 
 @end
 
@@ -31,7 +30,7 @@
 											 selector:@selector(respondToMemoryWarning) 
 												 name:UIApplicationDidReceiveMemoryWarningNotification
 											   object:nil];
-	
+		
 	return self;
 }
 
@@ -56,19 +55,6 @@
 	return downloader_;
 }
 
-- (void)setDownloader:(Downloader *)downloader
-{
-	if (downloader_ == downloader) { return; }
-	
-	[downloader_ stopDownloadThread];
-	[downloader_ release];
-	
-	downloader_ = downloader;
-	
-	[downloader_ retain];
-	[downloader_ performSelectorInBackground:@selector(launchDownloadThread) withObject:nil];
-}
-
 - (void) dealloc
 {
 	[downloader_ stopDownloadThread];
@@ -86,9 +72,14 @@
 
 	if (queue_ && [queue_ count]) { return; }	
 	if (![queue_ count]) { self.queue = nil; }
-	
-	if (downloader_ && downloader_.downloadingItem)	{ return; }	
-	if (!downloader_.downloadingItem) { self.downloader = nil; }
+
+	if (downloader_ && downloader_.downloadingItem) { return; }	
+	if (!downloader_.downloadingItem) 
+	{
+		[downloader_ stopDownloadThread];
+		[downloader_ release];
+		downloader_ = nil;
+	}
 }
 
 - (void) queueLoadinImageForSignature:(NSString *)signature
@@ -114,10 +105,16 @@
 	
 	DownloadItem* item = [[DownloadItem alloc] initWithURL:imageUrl];
 	item.signature = signature;
-
-	if (self.downloader.downloadingItem)	{ [queue addObject:item]; }	// If Downloader is busy we add item to the queue
-	else {																// otherwise start download immediately
-		[downloader_ processItem:item];
+	
+	NSThread* workingThread = self.downloader.workingThread;
+	
+	if (downloader_.downloadingItem || !workingThread) { [queue addObject:item]; }	// If Downloader is busy we add item to the queue
+	else {																			// otherwise start download immediately
+		NSLog(@"DownloadManager \"queueLoadingImage\": calling to process item %@", item.signature);
+		[downloader_ performSelector:@selector(processItem:) 
+							onThread:workingThread
+						  withObject:item
+					   waitUntilDone:YES];
 	}
 	
 	[item release];
@@ -140,17 +137,58 @@
 	if (i != count) { [queue removeObjectAtIndex:i]; }
 }
 
-- (void)itemWasProcessed:(DownloadItem *)item
+- (void) startNextItemInQueue
+{
+	if (!queue_ || ![queue_ count]) { return; }
+
+	if (self.downloader.downloadingItem) { return; }
+	
+	NSThread *workingThread = self.downloader.workingThread;
+
+	if (!workingThread) { return; }
+
+	DownloadItem * nextItem = [[queue_ objectAtIndex:0] retain];
+	[queue_ removeObjectAtIndex:0];
+	
+	[downloader_ performSelector:@selector(processItem:) 
+						onThread:workingThread
+					  withObject:nextItem
+				   waitUntilDone:YES];
+	
+	[nextItem release];
+}
+
+#pragma mark - Downloader delegate
+
+- (void) itemWasProcessed:(DownloadItem *)item
 {
 	if ([NSThread isMainThread])
 	{
-			// TODO: if item was downloaded send a notification to controller to recieve
-			// TODo: start downloading of next item
+		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:item.signature, @"signature", 
+								  [item pathToDownloadedFile], @"path", nil];
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName:ZBDownloadComplete object:self userInfo:userInfo];
+		
+		NSLog(@"DownloadManager \"itemWasProcessed\": calling to process item");
+		[self startNextItemInQueue];
 	}
 	else
 	{
 		[self performSelectorOnMainThread:@selector(itemWasProcessed:) withObject:item waitUntilDone:NO];
 	}	
+}
+
+- (void) downloaderIsReady
+{
+	if ([NSThread isMainThread]) 
+	{ 
+		NSLog(@"DownloadManager \"downloaderIsReady\": calling to process item");
+		[self startNextItemInQueue]; 
+	}
+	else 
+	{
+		[self performSelectorOnMainThread:@selector(downloaderIsReady) withObject:nil waitUntilDone:NO];
+	}
 }
 
 @end

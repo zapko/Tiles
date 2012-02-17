@@ -12,11 +12,13 @@
 static NSString* separator = @"_";
 
 #import "ZBMainViewController.h"
+#import "DownloadManager.h"
 
 @interface ZBMainViewController()
 
 @property (nonatomic, retain) NSMutableSet *		loadedImages;
 @property (nonatomic, retain) ZBTileScrollView *	tileScrollView;
+@property (nonatomic, retain) DownloadManager *		downloadManager;
 
 @end
 
@@ -26,8 +28,11 @@ static NSString* separator = @"_";
 
 @synthesize loadedImages	= loadedImages_;
 @synthesize tileScrollView	= tileScrollView_;
+@synthesize downloadManager = downloadManager_;
 
-- (NSMutableSet *)loadedImages
+#pragma mark - Lazy objects
+
+- (NSMutableSet *) loadedImages
 {
 	if (!loadedImages_)
 	{
@@ -36,7 +41,7 @@ static NSString* separator = @"_";
 	return loadedImages_;
 }
 
-- (ZBTileScrollView *)tileScrollView
+- (ZBTileScrollView *) tileScrollView
 {
 	if (!tileScrollView_)
 	{
@@ -49,23 +54,34 @@ static NSString* separator = @"_";
 	return tileScrollView_;
 }
 
-#pragma mark - Memory management
-
-- (void)didReceiveMemoryWarning
+- (DownloadManager *) downloadManager
 {
-    [super didReceiveMemoryWarning];
-    // Release any cached data, images, etc that aren't in use.
+	if (!downloadManager_)
+	{
+		downloadManager_ = [[DownloadManager alloc] init];
+	}
+	return downloadManager_;
 }
 
-- (void)dealloc 
+#pragma mark - Memory management
+
+- (void) didReceiveMemoryWarning
 {
-	[loadedImages_ release];
+    [super didReceiveMemoryWarning];
+		// TODO: try to save some memory
+}
+
+- (void) dealloc 
+{
+	[loadedImages_	 release];
+	[tileScrollView_ release];
+	
 	[super dealloc];
 }
 
 #pragma mark - View lifecycle
 
-- (void)viewDidLoad
+- (void) viewDidLoad
 {
     [super viewDidLoad];
 	
@@ -76,9 +92,14 @@ static NSString* separator = @"_";
 		
 	[view addSubview:		tileScrollView];
 	[view sendSubviewToBack:tileScrollView];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(imageLoaded:)
+												 name:ZBDownloadComplete
+											   object:self.downloadManager];
 }
 
-- (void)viewDidUnload
+- (void) viewDidUnload
 {
 	[tileScrollView_ release];
 	tileScrollView_ = nil;
@@ -86,90 +107,101 @@ static NSString* separator = @"_";
     [super viewDidUnload];
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+- (void) viewWillDisappear:(BOOL)animated
 {
 	[super viewWillDisappear:animated];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void) viewDidDisappear:(BOOL)animated
 {
 	[super viewDidDisappear:animated];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
-#pragma mark - Behavior -
+#pragma mark - Flipside View
 
-#pragma mark ZBTilesScrollView data source
-
-- (UIImage *)imageForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
-{
-	NSString* imageSignature = [NSString stringWithFormat:@"%d%@%d", horIndex, separator, verIndex];
-
-		// TODO: ask cache for the image
-	if (![self.loadedImages containsObject:imageSignature])
-	{
-			// TODO: ask loader to load an image
-		[self performSelector:@selector(imageLoaded:) withObject:imageSignature afterDelay:1];
-
-		return [UIImage imageNamed:@"placeholder.png"];
-	}
-	else
-	{
-		return [UIImage imageNamed:@"tile.png"];
-	}
-}
-
-- (void)imageLoaded:(NSString *)imageSignature
-{
-		// TODO: write loaded image to cache
-	[self.loadedImages addObject:imageSignature];
-	
-	if (!tileScrollView_) { return; }
-	
-	NSArray* components = [imageSignature componentsSeparatedByString:separator];
-	assert([components count] == 2);
-	NSUInteger horIndex = [[components objectAtIndex:0] integerValue];
-	NSUInteger verIndex = [[components objectAtIndex:1] integerValue];
-	
-	[self.tileScrollView setImageForTileAtHorIndex:horIndex verIndex:verIndex];
-}
-
-- (void)imageNoLongerNeededForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
-{
-	NSString* imageSignature = [NSString stringWithFormat:@"%d%@%d", horIndex, separator, verIndex];
-		// TODO: cancel loader from loading image with this signature
-	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(imageLoaded:) object:imageSignature];
-	
-	return;
-}
-
-#pragma mark Flipside View
-
-- (void)flipsideViewControllerDidFinish:(ZBFlipsideViewController *)controller
+- (void) flipsideViewControllerDidFinish:(ZBFlipsideViewController *)controller
 {
     [self dismissModalViewControllerAnimated:YES];
 }
 
-- (IBAction)showInfo:(id)sender
+- (IBAction) showInfo:(id)sender
 {    
     ZBFlipsideViewController *controller = [[[ZBFlipsideViewController alloc] initWithNibName:@"ZBFlipsideViewController" bundle:nil] autorelease];
     controller.delegate = self;
     controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
     [self presentModalViewController:controller animated:YES];
+}
+
+#pragma mark - Tiles loading
+
+- (UIImage *) imageForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
+{
+	NSString* imageSignature = [NSString stringWithFormat:@"%d%@%d", horIndex, separator, verIndex];
+
+		// TODO: ask cache for the image
+	BOOL imageIsLoaded			= NO;
+	NSMutableSet * loadedImages = self.loadedImages;
+	NSDictionary * imageInfo	= nil;
+	
+	for (imageInfo in loadedImages)
+	{
+		if ([imageSignature isEqualToString:[imageInfo objectForKey:@"signature"]])
+		{
+			imageIsLoaded = YES;
+			break;
+		}
+	}
+	
+	if (!imageIsLoaded)
+	{
+		[self.downloadManager queueLoadinImageForSignature:imageSignature];
+
+		return [UIImage imageNamed:@"placeholder.png"];
+	}
+	else
+	{
+			// TODO: get image from cache
+		return [UIImage imageWithContentsOfFile:[imageInfo objectForKey:@"path"]];
+	}
+}
+	 
+- (void) imageLoaded:(NSNotification *)note
+{
+		// TODO: write loaded image to cache
+	NSDictionary * imageInfo = note.userInfo;
+	
+	[self.loadedImages addObject:imageInfo];
+	
+	if (!tileScrollView_) { return; }
+	
+	NSArray* components = [[imageInfo objectForKey:@"signature"] componentsSeparatedByString:separator];
+	assert([components count] == 2);
+	NSUInteger horIndex = [[components objectAtIndex:0] integerValue];
+	NSUInteger verIndex = [[components objectAtIndex:1] integerValue];
+	
+	[self.tileScrollView reloadImageForTileAtHorIndex:horIndex verIndex:verIndex];
+}
+
+- (void) imageNoLongerNeededForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
+{
+	NSString* imageSignature = [NSString stringWithFormat:@"%d%@%d", horIndex, separator, verIndex];
+
+	[self.downloadManager dequeueLoadingImageForSignature:imageSignature];
 }
 
 @end
