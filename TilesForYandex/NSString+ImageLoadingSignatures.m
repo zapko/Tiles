@@ -13,7 +13,7 @@
 - (NSString *) URLforImageFromSignature
 {
 		// TODO: Forge real url using self as signature
-	NSString *result = [NSString stringWithString:@"http://img.artlebedev.ru/everything/brain/files/8/3/64_83BB8448-3EF0-45E1-A349-6F2C381B3B2F.jpg"];
+	NSString *result = [NSString stringWithString:@"http://dl.dropbox.com/u/19190161/tile.png"];
 	return result;
 }
 

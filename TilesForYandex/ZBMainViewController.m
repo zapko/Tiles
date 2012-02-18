@@ -59,7 +59,7 @@ static NSString* separator = @"_";
 	if (!downloadManager_)
 	{
 		downloadManager_ = [[DownloadManager alloc] init];
-		downloadManager_.numberOfSimultaneousLoadings = 1;
+		downloadManager_.numberOfSimultaneousLoadings = 3; // This number should depend on the average size of tiles, maybe on the connection speed
 	}
 	return downloadManager_;
 }

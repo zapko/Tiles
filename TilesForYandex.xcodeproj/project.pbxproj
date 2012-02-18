@@ -19,7 +19,6 @@
 		25ADC3C714E9683D001D7543 /* ZBMainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25ADC3C514E9683D001D7543 /* ZBMainViewController.xib */; };
 		25ADC3CA14E9683D001D7543 /* ZBFlipsideViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25ADC3C814E9683D001D7543 /* ZBFlipsideViewController.xib */; };
 		25ADC3E614EB0FA9001D7543 /* ZBTileScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25ADC3E514EB0FA9001D7543 /* ZBTileScrollView.m */; };
-		25ADC3E814EBF73A001D7543 /* tile.png in Resources */ = {isa = PBXBuildFile; fileRef = 25ADC3E714EBF73A001D7543 /* tile.png */; };
 		25ADC3EA14EBFC6A001D7543 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25ADC3E914EBFC6A001D7543 /* QuartzCore.framework */; };
 		25ADC3EC14EC17CA001D7543 /* placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 25ADC3EB14EC17CA001D7543 /* placeholder.png */; };
 		25ADC3F814EC8D7E001D7543 /* DownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 25ADC3F714EC8D7E001D7543 /* DownloadManager.m */; };
@@ -48,7 +47,6 @@
 		25ADC3C914E9683D001D7543 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ZBFlipsideViewController.xib; sourceTree = "<group>"; };
 		25ADC3E414EB0FA9001D7543 /* ZBTileScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBTileScrollView.h; sourceTree = "<group>"; };
 		25ADC3E514EB0FA9001D7543 /* ZBTileScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBTileScrollView.m; sourceTree = "<group>"; };
-		25ADC3E714EBF73A001D7543 /* tile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tile.png; sourceTree = "<group>"; };
 		25ADC3E914EBFC6A001D7543 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		25ADC3EB14EC17CA001D7543 /* placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = placeholder.png; sourceTree = "<group>"; };
 		25ADC3F614EC8D7E001D7543 /* DownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadManager.h; sourceTree = "<group>"; };
@@ -117,7 +115,6 @@
 				25ADC3C514E9683D001D7543 /* ZBMainViewController.xib */,
 				25ADC3C814E9683D001D7543 /* ZBFlipsideViewController.xib */,
 				25ADC3EB14EC17CA001D7543 /* placeholder.png */,
-				25ADC3E714EBF73A001D7543 /* tile.png */,
 				25ADC3B414E9683C001D7543 /* Supporting Files */,
 			);
 			path = TilesForYandex;
@@ -203,7 +200,6 @@
 				25ADC3B814E9683C001D7543 /* InfoPlist.strings in Resources */,
 				25ADC3C714E9683D001D7543 /* ZBMainViewController.xib in Resources */,
 				25ADC3CA14E9683D001D7543 /* ZBFlipsideViewController.xib in Resources */,
-				25ADC3E814EBF73A001D7543 /* tile.png in Resources */,
 				25ADC3EC14EC17CA001D7543 /* placeholder.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
