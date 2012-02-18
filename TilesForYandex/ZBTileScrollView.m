@@ -100,7 +100,7 @@
 
 #pragma mark - Reusable tiles queue
 
-- (NSMutableSet *)reusableQueue
+- (NSMutableSet *) reusableQueue
 {
 	if (!reusableQueue_) 
 	{ 

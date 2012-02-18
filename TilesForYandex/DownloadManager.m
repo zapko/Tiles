@@ -9,6 +9,8 @@
 #import "DownloadManager.h"
 #import "DownloadItem.h"
 
+#import "NSString+ImageLoadingSignatures.h"
+
 @interface DownloadManager()
 
 @property (nonatomic, retain) NSMutableArray*	queue;
@@ -17,12 +19,13 @@
 @end
 
 
-
 @implementation DownloadManager
 
 @synthesize queue							= queue_;
 @synthesize downloader						= downloader_;
 @synthesize numberOfSimultaneousLoadings	= numberOfSimultaneousLoadings_;
+
+#pragma mark - Init and memory stuff
 
 - (id) init
 {
@@ -39,7 +42,36 @@
 	return self;
 }
 
-- (NSMutableArray *)queue
+- (void) dealloc
+{
+	[downloader_ stopDownloadThread];
+	[downloader_ release];
+	
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	
+	[queue_ release];
+	[super	dealloc];
+}
+
+- (void) respondToMemoryWarning
+{
+	assert([NSThread isMainThread]);
+	
+	if (queue_ && [queue_ count]) { return; }	
+	if (![queue_ count]) { self.queue = nil; }
+	
+	if (downloader_ && downloader_.numberOfProcessingItems) { return; }	
+	if (!downloader_.numberOfProcessingItems) 
+	{
+		[downloader_ stopDownloadThread];
+		[downloader_ release];
+		downloader_ = nil;
+	}
+}
+
+#pragma mark - Lazy properties
+
+- (NSMutableArray *) queue
 {
 	if (!queue_)
 	{
@@ -60,32 +92,7 @@
 	return downloader_;
 }
 
-- (void) dealloc
-{
-	[downloader_ stopDownloadThread];
-	[downloader_ release];
-	
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	
-	[queue_ release];
-	[super	dealloc];
-}
-
-- (void) respondToMemoryWarning
-{
-	assert([NSThread isMainThread]);
-
-	if (queue_ && [queue_ count]) { return; }	
-	if (![queue_ count]) { self.queue = nil; }
-
-	if (downloader_ && downloader_.numberOfProcessingItems) { return; }	
-	if (!downloader_.numberOfProcessingItems) 
-	{
-		[downloader_ stopDownloadThread];
-		[downloader_ release];
-		downloader_ = nil;
-	}
-}
+#pragma mark - Queue manipulation
 
 - (void) queueLoadinImageForSignature:(NSString *)signature
 {		
@@ -104,19 +111,14 @@
 	
 	if (i != count) { return; } // Item is already in the queue
 
-	
-		// TODO: forge url according to signature
-	NSString* imageUrl = @"http://img.artlebedev.ru/everything/rozetkus-3x3/rozetkus-3x3-anon.jpg";
-	
-	DownloadItem* item = [[DownloadItem alloc] initWithURL:imageUrl];
-	item.signature = signature;
+		// Creating an item and checking condition of the downloader
+	DownloadItem* item = [[DownloadItem alloc] initWithSignature:signature];
 	
 	NSThread* workingThread = self.downloader.workingThread;
 	BOOL downloaderIsBusy = downloader_.numberOfProcessingItems >= self.numberOfSimultaneousLoadings;
 	
 	if (downloaderIsBusy || !workingThread) { [queue addObject:item]; }	// If Downloader is busy we add item to the queue
 	else {																// otherwise start download immediately
-//		NSLog(@"DownloadManager \"queueLoadingImage\": calling to process item %@", item.signature);
 		[downloader_ performSelector:@selector(processItem:) 
 							onThread:workingThread
 						  withObject:item
@@ -170,12 +172,11 @@
 {
 	if ([NSThread isMainThread])
 	{
-		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:item.signature, @"signature", 
-								  [item pathToDownloadedFile], @"path", nil];
+		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[item signature],				@"signature", 
+																			[item pathToDownloadedFile],	@"path",		nil];
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName:ZBDownloadComplete object:self userInfo:userInfo];
 		
-//		NSLog(@"DownloadManager \"itemWasProcessed\": calling to process item");
 		[self startNextItemInQueue];
 	}
 	else
@@ -188,7 +189,6 @@
 {
 	if ([NSThread isMainThread]) 
 	{ 
-//		NSLog(@"DownloadManager \"downloaderIsReady\": calling to process item");
 		[self startNextItemInQueue]; 
 	}
 	else 

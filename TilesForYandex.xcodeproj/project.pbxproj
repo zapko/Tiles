@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		25254F6414EF17BB0014947A /* NSString+ImageLoadingSignatures.m in Sources */ = {isa = PBXBuildFile; fileRef = 25254F6314EF17BB0014947A /* NSString+ImageLoadingSignatures.m */; };
 		25ADC3AE14E9683C001D7543 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25ADC3AD14E9683C001D7543 /* UIKit.framework */; };
 		25ADC3B014E9683C001D7543 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25ADC3AF14E9683C001D7543 /* Foundation.framework */; };
 		25ADC3B214E9683C001D7543 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25ADC3B114E9683C001D7543 /* CoreGraphics.framework */; };
@@ -27,6 +28,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		25254F6214EF17BB0014947A /* NSString+ImageLoadingSignatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ImageLoadingSignatures.h"; sourceTree = "<group>"; };
+		25254F6314EF17BB0014947A /* NSString+ImageLoadingSignatures.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ImageLoadingSignatures.m"; sourceTree = "<group>"; };
 		25ADC3A914E9683C001D7543 /* TilesForYandex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TilesForYandex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25ADC3AD14E9683C001D7543 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		25ADC3AF14E9683C001D7543 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -140,6 +143,8 @@
 				25ADC3FA14EC8D95001D7543 /* Downloader.m */,
 				25ADC3FC14EC8DAC001D7543 /* DownloadItem.h */,
 				25ADC3FD14EC8DAC001D7543 /* DownloadItem.m */,
+				25254F6214EF17BB0014947A /* NSString+ImageLoadingSignatures.h */,
+				25254F6314EF17BB0014947A /* NSString+ImageLoadingSignatures.m */,
 			);
 			name = Downloading;
 			sourceTree = "<group>";
@@ -218,6 +223,7 @@
 				25ADC3F814EC8D7E001D7543 /* DownloadManager.m in Sources */,
 				25ADC3FB14EC8D95001D7543 /* Downloader.m in Sources */,
 				25ADC3FE14EC8DAC001D7543 /* DownloadItem.m in Sources */,
+				25254F6414EF17BB0014947A /* NSString+ImageLoadingSignatures.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

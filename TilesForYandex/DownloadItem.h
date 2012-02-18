@@ -13,12 +13,12 @@
 @protocol DownloadItemDelegate <NSObject>
 
 @required
-- (void)downloadFinished:(DownloadItem *)sender;
+- (void) downloadFinished:(DownloadItem *)sender;
 
 @end
 
 
-@interface DownloadItem : NSObject
+@interface DownloadItem : NSObject <NSURLConnectionDelegate>
 
 @property (nonatomic, assign)	id<DownloadItemDelegate> delegate;
 
@@ -27,9 +27,10 @@
 @property (nonatomic, readonly) NSString* url;
 @property (nonatomic, copy)		NSString* signature;
 
-- (id) initWithURL:(NSString *)url;
-- (void) startDownload;
+- (id)		initWithSignature:(NSString *)signature;
 
-- (NSString *)pathToDownloadedFile;
+- (void)		startDownload;
+- (void)		stopDownload;
+- (NSString *)	pathToDownloadedFile;
 
 @end

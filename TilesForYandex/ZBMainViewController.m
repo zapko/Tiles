@@ -59,6 +59,7 @@ static NSString* separator = @"_";
 	if (!downloadManager_)
 	{
 		downloadManager_ = [[DownloadManager alloc] init];
+		downloadManager_.numberOfSimultaneousLoadings = 1;
 	}
 	return downloadManager_;
 }
