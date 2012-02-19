@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'TilesCache' target in the 'TilesCache' project
+//
+
+#ifdef __OBJC__
+	#import <Foundation/Foundation.h>
+#endif

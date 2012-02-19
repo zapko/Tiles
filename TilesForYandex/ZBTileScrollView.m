@@ -28,7 +28,6 @@
 
 @implementation ZBTileScrollView
 
-
 @synthesize reusableQueue = reusableQueue_;
 
 @synthesize dataSource = dataSource_;
@@ -54,6 +53,10 @@
 {
 	self = [super initWithFrame:frame];
 	if (!self) { return nil; }
+	
+	self.decelerationRate = UIScrollViewDecelerationRateFast;
+	super.delegate = self;
+	[CATransaction setDisableActions:YES];
 	
 	horTilesNum_ = horNum;
 	verTilesNum_ = verNum;
@@ -217,7 +220,7 @@
 	CALayer * tile = [self dequeueReusableTile]; 
 		
 	if (!tile) { tile = [[[CALayer alloc] init] autorelease]; }
-		
+			
 	tile.contents = (id)[[dataSource_ imageForTileAtHorIndex:horIndex verIndex:verIndex] CGImage];
 
 	return tile;
@@ -238,26 +241,42 @@
 - (void) bringTilesIntoAppropriateState
 {
 	assert( [NSThread isMainThread] );
-	[CATransaction setDisableActions:YES];
 	
 	CGRect bounds = self.bounds;
 	
 		// Determinig indexes of visible tiles
-	NSUInteger firstHorVisibleIndex = MAX( CGRectGetMinX(bounds) / tileSize_.width  - 1, 0 );
-	NSUInteger firstVerVisibleIndex = MAX( CGRectGetMinY(bounds) / tileSize_.height - 1, 0 );
+	VisibleIndexes_t visibleIndexes;
 	
-	NSUInteger lastHorVisibleIndex	= MIN( CGRectGetMaxX(bounds) / tileSize_.width  + 1, horTilesNum_ );
-	NSUInteger lastVerVisibleIndex	= MIN( CGRectGetMaxY(bounds) / tileSize_.height + 1, verTilesNum_ );
+	visibleIndexes.left		= MAX( CGRectGetMinX(bounds) / tileSize_.width  - 1, 0			  );
+	visibleIndexes.up		= MAX( CGRectGetMinY(bounds) / tileSize_.height - 1, 0			  );	
+	visibleIndexes.right	= MIN( CGRectGetMaxX(bounds) / tileSize_.width  + 1, horTilesNum_ );
+	visibleIndexes.down		= MIN( CGRectGetMaxY(bounds) / tileSize_.height + 1, verTilesNum_ );
 	
+	VisibleIndexes_t indexesToCheck;
+	
+	indexesToCheck.left  = MIN( visibleIndexes.left,  prevVisibleIndexes_.left	);
+	indexesToCheck.up	 = MIN( visibleIndexes.up,	  prevVisibleIndexes_.up	);
+	indexesToCheck.right = MAX( visibleIndexes.right, prevVisibleIndexes_.right	);
+	indexesToCheck.down	 = MAX( visibleIndexes.down,  prevVisibleIndexes_.down	);
+		
+	NSUInteger sumChanges = abs( visibleIndexes.left  - prevVisibleIndexes_.left)	+
+							abs( visibleIndexes.up	  - prevVisibleIndexes_.up)		+
+							abs( visibleIndexes.right - prevVisibleIndexes_.right)	+
+							abs( visibleIndexes.down  - prevVisibleIndexes_.down);
+	
+	if (!sumChanges) { return; }
+	
+	[CATransaction setDisableActions:YES];
+
 		// Going through all tiles
-	for (NSUInteger i = 0; i < horTilesNum_; ++i)
+	for (NSUInteger i = indexesToCheck.left; i < indexesToCheck.right; ++i)
 	{
 		NSMutableArray *column = [visibleTiles_ objectAtIndex:i];
-		for (NSUInteger j = 0; j < verTilesNum_; ++j)
+		for (NSUInteger j = indexesToCheck.up; j < indexesToCheck.down; ++j)
 		{
 				// If tile is visible it should be put into visibleTiles_, otherwise it should be released
-			BOOL tileIsVisible = (((i >= firstHorVisibleIndex) && (i <= lastHorVisibleIndex)) &&
-								  ((j >= firstVerVisibleIndex) && (j <= lastVerVisibleIndex)));
+			BOOL tileIsVisible = (((i >= visibleIndexes.left) && (i <= visibleIndexes.right)) &&
+								  ((j >= visibleIndexes.up)   && (j <= visibleIndexes.down)));
 			
 			CALayer* tileLayer = [column objectAtIndex:j];
 
@@ -288,7 +307,9 @@
 		}
 	}
 	
-	[CATransaction setDisableActions:NO];
+	prevVisibleIndexes_ = visibleIndexes;
+	
+//	[CATransaction setDisableActions:NO];
 }
 
 - (void)reloadData
@@ -307,5 +328,22 @@
 		}
 	}
 }
+
+#pragma mark UIScrollView delegate
+
+//- (void) scrollViewWillBeginDragging:(UIScrollView *)scrollView
+//{
+//	[CATransaction setDisableActions:YES];
+//}
+
+//- (void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+//{
+//	[CATransaction setDisableActions:decelerate];
+//}
+
+//- (void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+//{
+//	[CATransaction setDisableActions:NO];
+//}
 
 @end

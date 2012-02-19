@@ -18,11 +18,21 @@
 
 @end
 
+	// Struct to work with indexes of visible tiles
+typedef struct VisibleIndexes
+{
+	NSUInteger left;
+	NSUInteger up;
+	NSUInteger right;
+	NSUInteger down;
+} VisibleIndexes_t;
 
-@interface ZBTileScrollView : UIScrollView
+@interface ZBTileScrollView : UIScrollView <UIScrollViewDelegate>
 {
 	NSArray*	visibleTiles_;
 	BOOL		tilesShouldBeRelayouted_;
+	
+	VisibleIndexes_t prevVisibleIndexes_;
 }
 
 @property (nonatomic, assign)	id<ZBTileScrollViewDataSource>	dataSource;
@@ -31,6 +41,7 @@
 @property (nonatomic, readonly) NSUInteger	horTilesNum;
 @property (nonatomic, readonly) NSUInteger	verTilesNum;
 
+																	// ( horNum x verNum ) is size of "map" in tiles
 - (id)		initWithFrame:(CGRect)frame horizontalTilesNum:(NSUInteger)horNum verticalTilesNum:(NSUInteger)verNum;
 
 - (void)	reloadImageForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex;

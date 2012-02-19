@@ -13,12 +13,14 @@ static NSString* separator = @"_";
 
 #import "ZBMainViewController.h"
 #import "DownloadManager.h"
+#include "TilesCache.h"
 
 @interface ZBMainViewController()
 
-@property (nonatomic, retain) NSMutableSet *		loadedImages;
-@property (nonatomic, retain) ZBTileScrollView *	tileScrollView;
-@property (nonatomic, retain) DownloadManager *		downloadManager;
+@property (nonatomic, retain)	NSMutableSet *		loadedImages;
+@property (nonatomic, retain)	ZBTileScrollView *	tileScrollView;
+@property (nonatomic, retain)	DownloadManager *	downloadManager;
+@property (nonatomic)			ZBCacheRef			cache;
 
 @end
 
@@ -29,6 +31,7 @@ static NSString* separator = @"_";
 @synthesize loadedImages	= loadedImages_;
 @synthesize tileScrollView	= tileScrollView_;
 @synthesize downloadManager = downloadManager_;
+@synthesize cache			= cache_;
 
 #pragma mark - Lazy objects
 
@@ -64,6 +67,21 @@ static NSString* separator = @"_";
 	return downloadManager_;
 }
 
+- (ZBCacheRef) cache
+{
+	if (!cache_)
+	{	// TODO: Set cache dir instead Library/Cache
+		cache_ = ZBCacheCreate( [NSTemporaryDirectory() UTF8String], "jpg" ); 
+	}
+	return cache_;
+}
+
+- (void) setCache:(ZBCacheRef)cache
+{
+	ZBCacheDelete(cache_);
+	cache_ = cache;
+}
+
 #pragma mark - Memory management
 
 - (void) didReceiveMemoryWarning
@@ -74,6 +92,8 @@ static NSString* separator = @"_";
 
 - (void) dealloc 
 {
+	self.cache = nil;
+	
 	[loadedImages_	 release];
 	[tileScrollView_ release];
 	
@@ -154,20 +174,19 @@ static NSString* separator = @"_";
 {
 	NSString* imageSignature = [NSString stringWithFormat:@"%d%@%d", horIndex, separator, verIndex];
 
-		// TODO: ask cache for the image
-	BOOL imageIsLoaded			= NO;
-	NSMutableSet * loadedImages = self.loadedImages;
-	NSDictionary * imageInfo	= nil;
+	BOOL	 imageIsLoaded = NO;
+	UIImage	*image;
 	
-	for (imageInfo in loadedImages)
-	{
-		if ([imageSignature isEqualToString:[imageInfo objectForKey:@"signature"]])
-		{
-			imageIsLoaded = YES;
-			break;
-		}
+	char file[ZBFilePathLength];
+	int fileExists = ZBCacheGetFileForSignature(self.cache, [imageSignature UTF8String], file);
+	if (fileExists) 
+	{ 
+		NSString *filePath = [NSString stringWithCString:file encoding:NSUTF8StringEncoding];
+		image = [UIImage imageWithContentsOfFile:filePath];
+		imageIsLoaded = (image != nil);
+			// TODO: remove file if image is corrupted
 	}
-	
+		
 	if (!imageIsLoaded)
 	{
 		[self.downloadManager queueLoadinImageForSignature:imageSignature];
@@ -176,22 +195,22 @@ static NSString* separator = @"_";
 	}
 	else
 	{
-			// TODO: get image from cache
-			// TODO: check for image validity and remove file if it is corrupted
-		return [UIImage imageWithContentsOfFile:[imageInfo objectForKey:@"path"]];
+		return image;
 	}
 }
 	 
 - (void) imageLoaded:(NSNotification *)note
 {
-		// TODO: write loaded image to cache
 	NSDictionary * imageInfo = note.userInfo;
-	
-	[self.loadedImages addObject:imageInfo];
-	
+
+	NSString *signature = [imageInfo objectForKey:@"signature"];
+	NSString *path		= [imageInfo objectForKey:@"path"];
+
+	ZBCacheSetFileForSignature(self.cache, [path UTF8String], [signature UTF8String], YES);
+		
 	if (!tileScrollView_) { return; }
 	
-	NSArray* components = [[imageInfo objectForKey:@"signature"] componentsSeparatedByString:separator];
+	NSArray* components = [signature componentsSeparatedByString:separator];
 	assert([components count] == 2);
 	NSUInteger horIndex = [[components objectAtIndex:0] integerValue];
 	NSUInteger verIndex = [[components objectAtIndex:1] integerValue];

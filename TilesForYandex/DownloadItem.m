@@ -43,7 +43,8 @@
 	url_ = [[signature URLforImageFromSignature] copy];
 
 		// TODO: possible collisions should be avoided
-	self.path = [NSTemporaryDirectory() stringByAppendingPathComponent:self.signature];
+		// TODO: get file extension from elsewhere
+	self.path = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg", self.signature]];
 	
 	return self;
 }

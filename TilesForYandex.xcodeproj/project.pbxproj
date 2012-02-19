@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		25254F6414EF17BB0014947A /* NSString+ImageLoadingSignatures.m in Sources */ = {isa = PBXBuildFile; fileRef = 25254F6314EF17BB0014947A /* NSString+ImageLoadingSignatures.m */; };
+		259FA18C14F14CE500CE0F3F /* libTilesCache.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 259FA18814F1484200CE0F3F /* libTilesCache.a */; };
 		25ADC3AE14E9683C001D7543 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25ADC3AD14E9683C001D7543 /* UIKit.framework */; };
 		25ADC3B014E9683C001D7543 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25ADC3AF14E9683C001D7543 /* Foundation.framework */; };
 		25ADC3B214E9683C001D7543 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25ADC3B114E9683C001D7543 /* CoreGraphics.framework */; };
@@ -26,9 +27,27 @@
 		25ADC3FE14EC8DAC001D7543 /* DownloadItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 25ADC3FD14EC8DAC001D7543 /* DownloadItem.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		259FA18714F1484200CE0F3F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 259FA18314F1484100CE0F3F /* TilesCache.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 259FA17314F1484100CE0F3F;
+			remoteInfo = TilesCache;
+		};
+		259FA18A14F14CE000CE0F3F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 259FA18314F1484100CE0F3F /* TilesCache.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 259FA17214F1484100CE0F3F;
+			remoteInfo = TilesCache;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		25254F6214EF17BB0014947A /* NSString+ImageLoadingSignatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ImageLoadingSignatures.h"; sourceTree = "<group>"; };
 		25254F6314EF17BB0014947A /* NSString+ImageLoadingSignatures.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ImageLoadingSignatures.m"; sourceTree = "<group>"; };
+		259FA18314F1484100CE0F3F /* TilesCache.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = TilesCache.xcodeproj; path = TilesCache/TilesCache.xcodeproj; sourceTree = "<group>"; };
 		25ADC3A914E9683C001D7543 /* TilesForYandex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TilesForYandex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25ADC3AD14E9683C001D7543 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		25ADC3AF14E9683C001D7543 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -62,6 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				259FA18C14F14CE500CE0F3F /* libTilesCache.a in Frameworks */,
 				25ADC3EA14EBFC6A001D7543 /* QuartzCore.framework in Frameworks */,
 				25ADC3AE14E9683C001D7543 /* UIKit.framework in Frameworks */,
 				25ADC3B014E9683C001D7543 /* Foundation.framework in Frameworks */,
@@ -72,9 +92,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		259FA18414F1484100CE0F3F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				259FA18814F1484200CE0F3F /* libTilesCache.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		25ADC39E14E9683C001D7543 = {
 			isa = PBXGroup;
 			children = (
+				259FA18314F1484100CE0F3F /* TilesCache.xcodeproj */,
 				25ADC3B314E9683C001D7543 /* TilesForYandex */,
 				25ADC3AC14E9683C001D7543 /* Frameworks */,
 				25ADC3AA14E9683C001D7543 /* Products */,
@@ -160,6 +189,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				259FA18B14F14CE000CE0F3F /* PBXTargetDependency */,
 			);
 			name = TilesForYandex;
 			productName = TilesForYandex;
@@ -185,12 +215,28 @@
 			mainGroup = 25ADC39E14E9683C001D7543;
 			productRefGroup = 25ADC3AA14E9683C001D7543 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 259FA18414F1484100CE0F3F /* Products */;
+					ProjectRef = 259FA18314F1484100CE0F3F /* TilesCache.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				25ADC3A814E9683C001D7543 /* TilesForYandex */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		259FA18814F1484200CE0F3F /* libTilesCache.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libTilesCache.a;
+			remoteRef = 259FA18714F1484200CE0F3F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		25ADC3A714E9683C001D7543 /* Resources */ = {
@@ -224,6 +270,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		259FA18B14F14CE000CE0F3F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = TilesCache;
+			targetProxy = 259FA18A14F14CE000CE0F3F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		25ADC3B614E9683C001D7543 /* InfoPlist.strings */ = {
@@ -274,8 +328,10 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/TilesCache/TilesCache/\"";
 			};
 			name = Debug;
 		};
@@ -293,9 +349,11 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/TilesCache/TilesCache/\"";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
