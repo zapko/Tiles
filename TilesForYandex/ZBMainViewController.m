@@ -59,7 +59,7 @@ static NSString* separator = @"_";
 	if (!downloadManager_)
 	{
 		downloadManager_ = [[DownloadManager alloc] init];
-		downloadManager_.numberOfSimultaneousLoadings = 3; // This number should depend on the average size of tiles, maybe on the connection speed
+		downloadManager_.numberOfSimultaneousLoadings = 5; // This number should depend on the average size of tiles, maybe on the connection speed
 	}
 	return downloadManager_;
 }
@@ -177,6 +177,7 @@ static NSString* separator = @"_";
 	else
 	{
 			// TODO: get image from cache
+			// TODO: check for image validity and remove file if it is corrupted
 		return [UIImage imageWithContentsOfFile:[imageInfo objectForKey:@"path"]];
 	}
 }

@@ -40,7 +40,7 @@
 	
 	signature_ = [signature copy];
 	
-	url_ = [signature URLforImageFromSignature];
+	url_ = [[signature URLforImageFromSignature] copy];
 
 		// TODO: possible collisions should be avoided
 	self.path = [NSTemporaryDirectory() stringByAppendingPathComponent:self.signature];
@@ -66,8 +66,11 @@
 	NSURLRequest * request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.url]];
 	assert( request );
 	
-	connection_ = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+	connection_ = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
 	assert( connection_ );
+	
+	[connection_ scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+	[connection_ start];
 	
 	self.stream = [NSOutputStream outputStreamToFileAtPath:self.path append:NO];
 	[self.stream open];
