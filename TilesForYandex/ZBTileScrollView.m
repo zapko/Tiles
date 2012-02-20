@@ -98,7 +98,6 @@
 - (void) respondToMemoryWarning
 {
 	self.reusableQueue = nil;
-		//TODO: check possible ways to free memory
 }
 
 #pragma mark - Reusable tiles queue

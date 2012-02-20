@@ -62,7 +62,7 @@ static NSString* separator = @"_";
 	if (!downloadManager_)
 	{
 		downloadManager_ = [[DownloadManager alloc] init];
-		downloadManager_.numberOfSimultaneousLoadings = 5; // This number should depend on the average size of tiles, maybe on the connection speed
+		downloadManager_.numberOfSimultaneousLoadings = 5;
 	}
 	return downloadManager_;
 }
@@ -70,7 +70,7 @@ static NSString* separator = @"_";
 - (ZBCacheRef) cache
 {
 	if (!cache_)
-	{	// TODO: Set cache dir instead Library/Cache
+	{	// TODO: Set cache dir instead ( Library/Cache )
 		cache_ = ZBCacheCreate( [NSTemporaryDirectory() UTF8String], "jpg" ); 
 	}
 	return cache_;
@@ -87,7 +87,8 @@ static NSString* separator = @"_";
 - (void) didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-		// TODO: try to save some memory
+
+	self.cache = nil;
 }
 
 - (void) dealloc 
@@ -122,30 +123,9 @@ static NSString* separator = @"_";
 
 - (void) viewDidUnload
 {
-	[tileScrollView_ release];
-	tileScrollView_ = nil;
+	self.tileScrollView = nil;
 	
     [super viewDidUnload];
-}
-
-- (void) viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-}
-
-- (void) viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-}
-
-- (void) viewWillDisappear:(BOOL)animated
-{
-	[super viewWillDisappear:animated];
-}
-
-- (void) viewDidDisappear:(BOOL)animated
-{
-	[super viewDidDisappear:animated];
 }
 
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -174,8 +154,7 @@ static NSString* separator = @"_";
 {
 	NSString* imageSignature = [NSString stringWithFormat:@"%d%@%d", horIndex, separator, verIndex];
 
-	BOOL	 imageIsLoaded = NO;
-	UIImage	*image;
+	UIImage	*image = nil;
 	
 	char file[ZBFilePathLength];
 	int fileExists = ZBCacheGetFileForSignature(self.cache, [imageSignature UTF8String], file);
@@ -183,11 +162,12 @@ static NSString* separator = @"_";
 	{ 
 		NSString *filePath = [NSString stringWithCString:file encoding:NSUTF8StringEncoding];
 		image = [UIImage imageWithContentsOfFile:filePath];
-		imageIsLoaded = (image != nil);
-			// TODO: remove file if image is corrupted
 	}
 		
-	if (!imageIsLoaded)
+		// If file is corrupted it should be deleted and a new one downloaded
+	if (fileExists && !image) { ZBCacheRemoveFileForSignature(self.cache, [imageSignature UTF8String]); }
+		
+	if (!image)
 	{
 		[self.downloadManager queueLoadinImageForSignature:imageSignature];
 
