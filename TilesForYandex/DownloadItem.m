@@ -42,9 +42,21 @@
 	
 	url_ = [[signature URLforImageFromSignature] copy];
 
-		// TODO: possible collisions should be avoided
-		// TODO: get file extension from elsewhere
-	self.path = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", self.signature]];
+	NSString *tmpDir = NSTemporaryDirectory();
+	NSString *ext	 = ZBTileImageExtension;
+	NSString *path	 = [tmpDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@", signature_, ext]];
+	
+	NSFileManager *fileManager	= [NSFileManager defaultManager];
+	BOOL		   fileExists	= [fileManager fileExistsAtPath:path];
+
+	NSUInteger i = 1;
+	while (fileExists)
+	{
+		path		= [tmpDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_%ui.%@", signature_, ++i, ext]];
+		fileExists	= [fileManager fileExistsAtPath:path];
+	}
+	
+	self.path = path;
 	
 	return self;
 }

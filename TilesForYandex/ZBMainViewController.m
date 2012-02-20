@@ -12,7 +12,6 @@
 static NSString* separator = @"_";
 
 #import "ZBMainViewController.h"
-#import "DownloadManager.h"
 #import "TilesCache.h"
 #import "NSString+ImageLoadingSignatures.h"
 
@@ -63,6 +62,7 @@ static NSString* separator = @"_";
 	if (!downloadManager_)
 	{
 		downloadManager_ = [[DownloadManager alloc] init];
+		downloadManager_.networkActivityDelegate = self;
 		downloadManager_.numberOfSimultaneousLoadings = 7;
 	}
 	return downloadManager_;
@@ -72,9 +72,9 @@ static NSString* separator = @"_";
 {
 	if (!cache_)
 	{
-		NSArray *cachePaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+		NSArray *cachePaths = NSSearchPathForDirectoriesInDomains( NSCachesDirectory, NSUserDomainMask, YES );
 		NSString *cachePath = [NSString stringWithFormat:@"%@/", [cachePaths objectAtIndex:0]];
-		cache_ = ZBCacheCreate( [cachePath UTF8String], "png" );
+		cache_ = ZBCacheCreate( [cachePath UTF8String], [ZBTileImageExtension UTF8String] );
 		assert( cache_ );
 	}
 	return cache_;
@@ -216,6 +216,30 @@ static NSString* separator = @"_";
 	NSString* imageSignature = [NSString stringWithFormat:@"%d%@%d", horIndex, separator, verIndex];
 
 	[self.downloadManager dequeueLoadingImageForSignature:imageSignature];
+}
+
+#pragma mark - Network activity observing
+
+- (void) startsUsingNetwork
+{
+	if ([NSThread isMainThread])
+	{
+		[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+	}
+	else {
+		[self performSelectorOnMainThread:@selector(startsUsingNetwork) withObject:nil waitUntilDone:NO];
+	}
+}
+
+- (void) stopsUsingNetwork
+{
+	if ([NSThread isMainThread])
+	{
+		[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+	}
+	else {
+		[self performSelectorOnMainThread:@selector(stopsUsingNetwork) withObject:nil waitUntilDone:NO];
+	}
 }
 
 @end

@@ -9,7 +9,15 @@
 #import <Foundation/Foundation.h>
 #import "Downloader.h"
 
-static NSString * ZBDownloadComplete = @"com.zababako.yandextiles.downloadCompleteNotification";
+extern NSString* const ZBDownloadComplete;
+
+@protocol NetworkActivityDelegate <NSObject>
+
+@required
+- (void)startsUsingNetwork;
+- (void)stopsUsingNetwork;
+
+@end
 
 	// This is an interface class for downloads management.
 	// It operates on main thread and communicates with
@@ -17,7 +25,8 @@ static NSString * ZBDownloadComplete = @"com.zababako.yandextiles.downloadComple
 
 @interface DownloadManager : NSObject <DownloaderDelegate>
 
-@property (nonatomic, assign) NSUInteger numberOfSimultaneousLoadings;
+@property (nonatomic, assign) id<NetworkActivityDelegate>	networkActivityDelegate;
+@property (nonatomic, assign) NSUInteger					numberOfSimultaneousLoadings;
 
 - (void) queueLoadinImageForSignature:		(NSString *)signature;
 - (void) dequeueLoadingImageForSignature:	(NSString *)signature;

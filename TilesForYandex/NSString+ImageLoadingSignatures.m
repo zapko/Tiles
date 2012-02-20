@@ -8,6 +8,8 @@
 
 #import "NSString+ImageLoadingSignatures.h"
 
+NSString* const ZBTileImageExtension = @"png";
+
 @implementation NSString (TilesSignatures)
 
 - (NSString *) URLforImageFromSignature
@@ -19,7 +21,9 @@
 	
 	int tile = (horIndex + rand_r(&verIndex)) % 12;
 	
-	NSString *result = [NSString stringWithFormat:@"http://dl.dropbox.com/u/19190161/Map_png_optimized/Tile_%.2d.png", tile];
+	NSString *ext = ZBTileImageExtension;
+	
+	NSString *result = [NSString stringWithFormat:@"http://dl.dropbox.com/u/19190161/Map_%@_optimized/Tile_%.2d.%@", ext, tile, ext];
 	return result;
 }
 

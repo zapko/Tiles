@@ -24,7 +24,7 @@
 	BOOL downloadThreadShouldStop_;
 }
 
-@property (nonatomic, assign)	id<DownloaderDelegate> delegate;
+@property (nonatomic, assign)	id<DownloaderDelegate>	delegate;
 
 @property (assign, readonly) NSThread*		workingThread;
 @property (assign, readonly) NSUInteger		numberOfProcessingItems;

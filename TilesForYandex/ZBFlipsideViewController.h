@@ -10,9 +10,14 @@
 
 @class ZBFlipsideViewController;
 
+
 @protocol ZBFlipsideViewControllerDelegate
+
 - (void)flipsideViewControllerDidFinish:(ZBFlipsideViewController *)controller;
+
 @end
+
+
 
 @interface ZBFlipsideViewController : UIViewController
 

@@ -17,9 +17,8 @@
 
 @implementation Downloader
 
-@synthesize delegate = delegate_;
-
-@synthesize workingThread	= workingThread_;
+@synthesize delegate				= delegate_;
+@synthesize workingThread			= workingThread_;
 @synthesize numberOfProcessingItems = numberOfProcessingItems_;
 
 #pragma mark - Memory management

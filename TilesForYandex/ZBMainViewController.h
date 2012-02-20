@@ -8,8 +8,11 @@
 
 #import "ZBFlipsideViewController.h"
 #import "ZBTileScrollView.h"
+#import "DownloadManager.h"
 
-@interface ZBMainViewController : UIViewController <ZBFlipsideViewControllerDelegate, ZBTileScrollViewDataSource>
+@interface ZBMainViewController : UIViewController <ZBFlipsideViewControllerDelegate, 
+													ZBTileScrollViewDataSource,
+													NetworkActivityDelegate>
 
 - (IBAction)showInfo:(id)sender;
 

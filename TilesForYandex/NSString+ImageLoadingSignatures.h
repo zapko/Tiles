@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Zababako. All rights reserved.
 //
 
-
+extern NSString* const ZBTileImageExtension;
 
 @interface NSString (TilesSignatures)
 

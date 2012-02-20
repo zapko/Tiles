@@ -11,9 +11,12 @@
 
 #import "NSString+ImageLoadingSignatures.h"
 
+NSString* const ZBDownloadComplete = @"com.zababako.yandextiles.downloadFinishedNotification";
+
+
 @interface DownloadManager()
 
-@property (nonatomic, retain) NSMutableArray*	queue;
+@property (nonatomic, retain)	NSMutableArray*	queue;
 @property (nonatomic, readonly) Downloader*		downloader;
 
 @end
@@ -24,6 +27,7 @@
 @synthesize queue							= queue_;
 @synthesize downloader						= downloader_;
 @synthesize numberOfSimultaneousLoadings	= numberOfSimultaneousLoadings_;
+@synthesize networkActivityDelegate			= networkActivityDelegate_;
 
 #pragma mark - Init and memory stuff
 
@@ -88,8 +92,33 @@
 		downloader_.delegate = self;
 		
 		[downloader_ performSelectorInBackground:@selector(launchDownloadThread) withObject:nil];
+		
+		[downloader_ addObserver:self 
+					  forKeyPath:@"numberOfProcessingItems" 
+						 options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld 
+						 context:nil];
 	}
 	return downloader_;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+	if (!networkActivityDelegate_) { return; }
+	
+	assert( object == downloader_ );
+	assert( [keyPath isEqualToString:@"numberOfProcessingItems"] );
+
+	NSUInteger networkActive	= [[change objectForKey:@"new"] unsignedIntegerValue];
+	NSUInteger networkWasActive = [[change objectForKey:@"old"] unsignedIntegerValue];
+
+	if (networkActive && !networkWasActive)
+	{
+		[networkActivityDelegate_ startsUsingNetwork];
+	}
+	if (!networkActive && networkWasActive)
+	{
+		[networkActivityDelegate_ stopsUsingNetwork];
+	}
 }
 
 #pragma mark - Queue manipulation
