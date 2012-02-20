@@ -55,7 +55,6 @@
 	if (!self) { return nil; }
 	
 	self.decelerationRate = UIScrollViewDecelerationRateFast;
-//	super.delegate = self;
 	
 	horTilesNum_ = horNum;
 	verTilesNum_ = verNum;
@@ -194,9 +193,10 @@
 	
 	tileSize_ = tileSize;
 	
-	[super setContentSize:CGSizeMake(tileSize_.width  * horTilesNum_, 
-									 tileSize_.height * verTilesNum_)];
-	
+	CGSize contentSize = CGSizeMake(tileSize_.width  * horTilesNum_, 
+									tileSize_.height * verTilesNum_);
+	[super setContentSize:contentSize];
+
 	tilesShouldBeRelayouted_ = YES;
 	[self setNeedsLayout];
 }
@@ -245,7 +245,7 @@
 	assert( [NSThread isMainThread] );
 	
 	CGRect bounds = self.bounds;
-	
+		
 		// Determinig indexes of visible tiles
 	VisibleIndexes_t visibleIndexes;
 	
@@ -330,22 +330,5 @@
 		}
 	}
 }
-
-#pragma mark UIScrollView delegate
-
-//- (void) scrollViewWillBeginDragging:(UIScrollView *)scrollView
-//{
-//	[CATransaction setDisableActions:YES];
-//}
-
-//- (void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-//{
-//	[CATransaction setDisableActions:decelerate];
-//}
-
-//- (void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-//{
-//	[CATransaction setDisableActions:NO];
-//}
 
 @end

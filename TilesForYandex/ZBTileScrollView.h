@@ -27,7 +27,10 @@ typedef struct VisibleIndexes
 	NSUInteger down;
 } VisibleIndexes_t;
 
-@interface ZBTileScrollView : UIScrollView <UIScrollViewDelegate>
+
+	
+	// Tile scroll view that has a data source to ask for tile images
+@interface ZBTileScrollView : UIScrollView
 {
 	NSArray*	visibleTiles_;
 	BOOL		tilesShouldBeRelayouted_;
