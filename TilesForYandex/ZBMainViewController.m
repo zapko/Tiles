@@ -13,7 +13,8 @@ static NSString* separator = @"_";
 
 #import "ZBMainViewController.h"
 #import "DownloadManager.h"
-#include "TilesCache.h"
+#import "TilesCache.h"
+#import "NSString+ImageLoadingSignatures.h"
 
 @interface ZBMainViewController()
 
@@ -62,7 +63,7 @@ static NSString* separator = @"_";
 	if (!downloadManager_)
 	{
 		downloadManager_ = [[DownloadManager alloc] init];
-		downloadManager_.numberOfSimultaneousLoadings = 5;
+		downloadManager_.numberOfSimultaneousLoadings = 7;
 	}
 	return downloadManager_;
 }
@@ -70,8 +71,11 @@ static NSString* separator = @"_";
 - (ZBCacheRef) cache
 {
 	if (!cache_)
-	{	// TODO: Set cache dir instead ( Library/Cache )
-		cache_ = ZBCacheCreate( [NSTemporaryDirectory() UTF8String], "jpg" ); 
+	{
+		NSArray *cachePaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+		NSString *cachePath = [NSString stringWithFormat:@"%@/", [cachePaths objectAtIndex:0]];
+		cache_ = ZBCacheCreate( [cachePath UTF8String], "png" );
+		assert( cache_ );
 	}
 	return cache_;
 }
@@ -116,7 +120,7 @@ static NSString* separator = @"_";
 	[view sendSubviewToBack:tileScrollView];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(imageLoaded:)
+											 selector:@selector(imageLoadingFinished:)
 												 name:ZBDownloadComplete
 											   object:self.downloadManager];
 }
@@ -156,7 +160,7 @@ static NSString* separator = @"_";
 
 	UIImage	*image = nil;
 	
-	char file[ZBFilePathLength];
+	char file[ZBFilePathLength] = { 0 };
 	int fileExists = ZBCacheGetFileForSignature(self.cache, [imageSignature UTF8String], file);
 	if (fileExists) 
 	{ 
@@ -179,12 +183,21 @@ static NSString* separator = @"_";
 	}
 }
 	 
-- (void) imageLoaded:(NSNotification *)note
+- (void) imageLoadingFinished:(NSNotification *)note
 {
 	NSDictionary * imageInfo = note.userInfo;
 
 	NSString *signature = [imageInfo objectForKey:@"signature"];
 	NSString *path		= [imageInfo objectForKey:@"path"];
+
+	if (!path) // Image was not loaded
+	{
+		NSLog(@"Image for signature %@ was not load,try to check the url %@", signature, [signature URLforImageFromSignature]);
+		return; 
+	} 
+	
+	assert( signature );
+	assert( path );
 
 	ZBCacheSetFileForSignature(self.cache, [path UTF8String], [signature UTF8String], YES);
 		

@@ -16,8 +16,10 @@
 	assert([components count] == 2);
 	NSUInteger horIndex = [[components objectAtIndex:0] integerValue];
 	NSUInteger verIndex = [[components objectAtIndex:1] integerValue];
-
-	NSString *result = [NSString stringWithFormat:@"http://dl.dropbox.com/u/19190161/Map_jpg_low/Tile_%.2d.jpg", (horIndex + verIndex) % 8];
+	
+	int tile = (horIndex + rand_r(&verIndex)) % 12;
+	
+	NSString *result = [NSString stringWithFormat:@"http://dl.dropbox.com/u/19190161/Map_png_optimized/Tile_%.2d.png", tile];
 	return result;
 }
 

@@ -55,8 +55,7 @@
 	if (!self) { return nil; }
 	
 	self.decelerationRate = UIScrollViewDecelerationRateFast;
-	super.delegate = self;
-	[CATransaction setDisableActions:YES];
+//	super.delegate = self;
 	
 	horTilesNum_ = horNum;
 	verTilesNum_ = verNum;
@@ -218,7 +217,11 @@
 	
 	CALayer * tile = [self dequeueReusableTile]; 
 		
-	if (!tile) { tile = [[[CALayer alloc] init] autorelease]; }
+	if (!tile) 
+	{ 
+		tile = [[[CALayer alloc] init] autorelease];
+		tile.opaque = YES;
+	}
 			
 	tile.contents = (id)[[dataSource_ imageForTileAtHorIndex:horIndex verIndex:verIndex] CGImage];
 
@@ -246,8 +249,8 @@
 		// Determinig indexes of visible tiles
 	VisibleIndexes_t visibleIndexes;
 	
-	visibleIndexes.left		= MAX( CGRectGetMinX(bounds) / tileSize_.width  - 1, 0			  );
-	visibleIndexes.up		= MAX( CGRectGetMinY(bounds) / tileSize_.height - 1, 0			  );	
+	visibleIndexes.left		= MAX( CGRectGetMinX(bounds) / tileSize_.width , 0			  );
+	visibleIndexes.up		= MAX( CGRectGetMinY(bounds) / tileSize_.height, 0			  );	
 	visibleIndexes.right	= MIN( CGRectGetMaxX(bounds) / tileSize_.width  + 1, horTilesNum_ );
 	visibleIndexes.down		= MIN( CGRectGetMaxY(bounds) / tileSize_.height + 1, verTilesNum_ );
 	
@@ -308,7 +311,7 @@
 	
 	prevVisibleIndexes_ = visibleIndexes;
 	
-//	[CATransaction setDisableActions:NO];
+	[CATransaction setDisableActions:NO];
 }
 
 - (void)reloadData

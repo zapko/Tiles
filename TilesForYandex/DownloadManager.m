@@ -155,8 +155,8 @@
 
 	if (!workingThread) { return; }
 
-	DownloadItem * nextItem = [[queue_ objectAtIndex:0] retain];
-	[queue_ removeObjectAtIndex:0];
+	DownloadItem * nextItem = [[queue_ lastObject] retain];
+	[queue_ removeLastObject];
 	
 	[downloader_ performSelector:@selector(processItem:) 
 						onThread:workingThread

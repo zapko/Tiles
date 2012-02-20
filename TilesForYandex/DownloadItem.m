@@ -44,7 +44,7 @@
 
 		// TODO: possible collisions should be avoided
 		// TODO: get file extension from elsewhere
-	self.path = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg", self.signature]];
+	self.path = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", self.signature]];
 	
 	return self;
 }
@@ -67,12 +67,9 @@
 	NSURLRequest * request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.url]];
 	assert( request );
 	
-	connection_ = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
+	connection_ = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
 	assert( connection_ );
-	
-	[connection_ scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-	[connection_ start];
-	
+		
 	self.stream = [NSOutputStream outputStreamToFileAtPath:self.path append:NO];
 	[self.stream open];
 }

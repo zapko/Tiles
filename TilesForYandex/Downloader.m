@@ -52,7 +52,7 @@
 	}
 			
 	while (!downloadThreadShouldStop_ && [downloadRunLoop runMode:NSDefaultRunLoopMode 
-													  beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]]);
+													  beforeDate:[NSDate dateWithTimeIntervalSinceNow:10]]);
 	
 	NSLog(@"Download thread ended");
 	

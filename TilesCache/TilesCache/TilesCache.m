@@ -25,6 +25,8 @@ void ZBCacheForgeFilePathForSignature( const ZBCacheRef cache, const char *signa
 	int signatureLen = strlen(signature);
 	
 	char filename[signatureLen + 1];
+	memset(filename, 0, signatureLen + 1);
+	
 	for (int i = 0; i < signatureLen; ++i)
 	{
 		if ( isalnum( signature[i] )) {
@@ -53,6 +55,9 @@ ZBCacheRef ZBCacheCreate( const char* pathToCache, const char* tileImageExtensio
 		// Checking whether cache directory is valid and writable
 	int pathLen = strlen( pathToCache );
 	char probePath[pathLen + 5]; // 4 - test 1 - \0
+	memset(probePath, 0, pathLen + 5);
+	
+	strncpy( probePath, pathToCache, pathLen );
 	strcat( probePath, "test" );
 
 	FILE *probe = fopen( probePath, "wb" );
@@ -116,7 +121,7 @@ int ZBCacheSetFileForSignature( const ZBCacheRef	cache,
 	}
 	
 		// Checking whether extension of the tmp file fits the extension of the cache object 
-	char* tmpExtension = strrchr( tmpFilePath, '.' );
+	char* tmpExtension = strrchr( tmpFilePath, '.' ) + 1;
 	int caseDif = tmpExtension ? strcasecmp( tmpExtension, cache->extension ) : 0;
 	if ( caseDif || !tmpExtension ) 
 	{
@@ -134,7 +139,7 @@ int ZBCacheSetFileForSignature( const ZBCacheRef	cache,
 		return 0; 
 	}
 	
-	char cachedPath[ZBFilePathLength];
+	char cachedPath[ZBFilePathLength] = { 0 };
 	ZBCacheForgeFilePathForSignature( cache, signature, cachedPath );
 
 	cached = fopen( cachedPath, "wb" );
@@ -147,7 +152,7 @@ int ZBCacheSetFileForSignature( const ZBCacheRef	cache,
 	
 	int condition = 0;
 	int charSize  = sizeof( char );
-	int bufSize	  = 1024;
+	int bufSize	  = 2048;
 	char buf[bufSize];
 	
 	while ( !condition ) 
@@ -185,7 +190,7 @@ void ZBCacheRemoveFileForSignature ( const ZBCacheRef	cache,
 		return; 
 	}
 	
-	char filePath[ZBFilePathLength];
+	char filePath[ZBFilePathLength] = { 0 };
 	ZBCacheForgeFilePathForSignature( cache, signature, filePath );
 	remove( filePath );
 }
@@ -198,10 +203,10 @@ int ZBCacheGetFileForSignature( const ZBCacheRef	cache,
 	if (( !cache ) || ( !signature ) || ( !result )) 
 	{ 
 		fprintf( stderr, "Invalid argument to get file for signature\n" );
-		return; 
+		return 0; 
 	}
 	
-	char filePath[ZBFilePathLength];
+	char filePath[ZBFilePathLength] = { 0 };
 	ZBCacheForgeFilePathForSignature( cache, signature, filePath );
 
 	FILE* test = fopen( filePath, "rb" ); // Determine whether file with this name exists and readable
