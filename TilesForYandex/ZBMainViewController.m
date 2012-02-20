@@ -115,6 +115,7 @@ static NSString* separator = @"_";
 	ZBTileScrollView*	tileScrollView	= self.tileScrollView;
 
 	tileScrollView.frame = view.bounds;
+	tileScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 		
 	[view addSubview:		tileScrollView];
 	[view sendSubviewToBack:tileScrollView];
