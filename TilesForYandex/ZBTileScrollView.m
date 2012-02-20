@@ -277,8 +277,8 @@
 		for (NSUInteger j = indexesToCheck.up; j < indexesToCheck.down; ++j)
 		{
 				// If tile is visible it should be put into visibleTiles_, otherwise it should be released
-			BOOL tileIsVisible = (((i >= visibleIndexes.left) && (i <= visibleIndexes.right)) &&
-								  ((j >= visibleIndexes.up)   && (j <= visibleIndexes.down)));
+			BOOL tileIsVisible = ((( i >= visibleIndexes.left ) && ( i <= visibleIndexes.right )) &&
+								  (( j >= visibleIndexes.up )   && ( j <= visibleIndexes.down )));
 			
 			CALayer* tileLayer = [column objectAtIndex:j];
 
