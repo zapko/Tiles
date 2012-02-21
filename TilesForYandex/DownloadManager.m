@@ -123,7 +123,7 @@ NSString* const ZBDownloadComplete = @"com.zababako.yandextiles.downloadFinished
 
 #pragma mark - Queue manipulation
 
-- (void) queueLoadinImageForSignature:(NSString *)signature
+- (void) downloadImageForSignature:(NSString *)signature
 {		
 	assert([NSThread isMainThread]);
 	
@@ -157,7 +157,7 @@ NSString* const ZBDownloadComplete = @"com.zababako.yandextiles.downloadFinished
 	[item release];
 }
 
-- (void) dequeueLoadingImageForSignature:(NSString *)signature
+- (void) cancelDownloadingImageForSignature:(NSString *)signature
 {
 	assert([NSThread isMainThread]);
 
@@ -172,6 +172,15 @@ NSString* const ZBDownloadComplete = @"com.zababako.yandextiles.downloadFinished
 	}
 	
 	if (i != count) { [queue removeObjectAtIndex:i]; }
+	
+	NSThread *workingThread = self.downloader.workingThread;
+
+	if (!workingThread) { return; }
+	
+	[downloader_ performSelector:@selector(cancelProcessingItemWithSignature:)
+						onThread:workingThread
+					  withObject:signature
+				   waitUntilDone:YES];
 }
 
 - (void) startNextItemInQueue
@@ -214,15 +223,16 @@ NSString* const ZBDownloadComplete = @"com.zababako.yandextiles.downloadFinished
 	}	
 }
 
-- (void) downloaderIsReady
-{
+- (void) downloaderIsReady: (Downloader *)downloader
+{	
 	if ([NSThread isMainThread]) 
 	{ 
+		assert(downloader == downloader_);
 		[self startNextItemInQueue]; 
 	}
 	else 
 	{
-		[self performSelectorOnMainThread:@selector(downloaderIsReady) withObject:nil waitUntilDone:NO];
+		[self performSelectorOnMainThread:@selector(downloaderIsReady:) withObject:downloader waitUntilDone:NO];
 	}
 }
 

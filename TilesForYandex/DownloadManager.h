@@ -28,7 +28,7 @@ extern NSString* const ZBDownloadComplete;
 @property (nonatomic, assign) id<NetworkActivityDelegate>	networkActivityDelegate;
 @property (nonatomic, assign) NSUInteger					numberOfSimultaneousLoadings;
 
-- (void) queueLoadinImageForSignature:		(NSString *)signature;
-- (void) dequeueLoadingImageForSignature:	(NSString *)signature;
+- (void) downloadImageForSignature:				(NSString *)signature;
+- (void) cancelDownloadingImageForSignature:	(NSString *)signature;
 
 @end

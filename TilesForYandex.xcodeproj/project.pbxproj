@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		25254F6414EF17BB0014947A /* NSString+ImageLoadingSignatures.m in Sources */ = {isa = PBXBuildFile; fileRef = 25254F6314EF17BB0014947A /* NSString+ImageLoadingSignatures.m */; };
+		2584C30A14F45CA60097746C /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2584C30914F45CA60097746C /* Default@2x.png */; };
+		2584C30C14F45CD00097746C /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2584C30B14F45CD00097746C /* Icon@2x.png */; };
+		2584C30E14F45CEB0097746C /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2584C30D14F45CEB0097746C /* Icon.png */; };
+		2584C31214F45D720097746C /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 2584C31114F45D720097746C /* Default.png */; };
 		259FA18C14F14CE500CE0F3F /* libTilesCache.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 259FA18814F1484200CE0F3F /* libTilesCache.a */; };
 		25ADC3AE14E9683C001D7543 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25ADC3AD14E9683C001D7543 /* UIKit.framework */; };
 		25ADC3B014E9683C001D7543 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25ADC3AF14E9683C001D7543 /* Foundation.framework */; };
@@ -25,7 +29,6 @@
 		25ADC3F814EC8D7E001D7543 /* DownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 25ADC3F714EC8D7E001D7543 /* DownloadManager.m */; };
 		25ADC3FB14EC8D95001D7543 /* Downloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 25ADC3FA14EC8D95001D7543 /* Downloader.m */; };
 		25ADC3FE14EC8DAC001D7543 /* DownloadItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 25ADC3FD14EC8DAC001D7543 /* DownloadItem.m */; };
-		25DE394E14F1F65300D602C8 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 25DE394D14F1F65300D602C8 /* icon.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +51,10 @@
 /* Begin PBXFileReference section */
 		25254F6214EF17BB0014947A /* NSString+ImageLoadingSignatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ImageLoadingSignatures.h"; sourceTree = "<group>"; };
 		25254F6314EF17BB0014947A /* NSString+ImageLoadingSignatures.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ImageLoadingSignatures.m"; sourceTree = "<group>"; };
+		2584C30914F45CA60097746C /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "../Default@2x.png"; sourceTree = "<group>"; };
+		2584C30B14F45CD00097746C /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../Icon@2x.png"; sourceTree = "<group>"; };
+		2584C30D14F45CEB0097746C /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Icon.png; sourceTree = "<group>"; };
+		2584C31114F45D720097746C /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = ../Default.png; sourceTree = "<group>"; };
 		259FA18314F1484100CE0F3F /* TilesCache.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = TilesCache.xcodeproj; path = TilesCache/TilesCache.xcodeproj; sourceTree = "<group>"; };
 		25ADC3A914E9683C001D7543 /* TilesForYandex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TilesForYandex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25ADC3AD14E9683C001D7543 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -75,7 +82,6 @@
 		25ADC3FA14EC8D95001D7543 /* Downloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Downloader.m; sourceTree = "<group>"; };
 		25ADC3FC14EC8DAC001D7543 /* DownloadItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadItem.h; sourceTree = "<group>"; };
 		25ADC3FD14EC8DAC001D7543 /* DownloadItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadItem.m; sourceTree = "<group>"; };
-		25DE394D14F1F65300D602C8 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,7 +152,10 @@
 				25ADC3C514E9683D001D7543 /* ZBMainViewController.xib */,
 				25ADC3C814E9683D001D7543 /* ZBFlipsideViewController.xib */,
 				25ADC3EB14EC17CA001D7543 /* placeholder.png */,
-				25DE394D14F1F65300D602C8 /* icon.png */,
+				2584C30D14F45CEB0097746C /* Icon.png */,
+				2584C30B14F45CD00097746C /* Icon@2x.png */,
+				2584C31114F45D720097746C /* Default.png */,
+				2584C30914F45CA60097746C /* Default@2x.png */,
 				25ADC3B414E9683C001D7543 /* Supporting Files */,
 			);
 			path = TilesForYandex;
@@ -250,7 +259,10 @@
 				25ADC3C714E9683D001D7543 /* ZBMainViewController.xib in Resources */,
 				25ADC3CA14E9683D001D7543 /* ZBFlipsideViewController.xib in Resources */,
 				25ADC3EC14EC17CA001D7543 /* placeholder.png in Resources */,
-				25DE394E14F1F65300D602C8 /* icon.png in Resources */,
+				2584C30A14F45CA60097746C /* Default@2x.png in Resources */,
+				2584C30C14F45CD00097746C /* Icon@2x.png in Resources */,
+				2584C30E14F45CEB0097746C /* Icon.png in Resources */,
+				2584C31214F45D720097746C /* Default.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

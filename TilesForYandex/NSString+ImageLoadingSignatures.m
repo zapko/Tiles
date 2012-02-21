@@ -14,12 +14,12 @@ NSString* const ZBTileImageExtension = @"png";
 
 - (NSString *) URLforImageFromSignature
 {
-	NSArray* components = [self componentsSeparatedByString:@"_"];
-	assert([components count] == 2);
-	NSUInteger horIndex = [[components objectAtIndex:0] integerValue];
-	NSUInteger verIndex = [[components objectAtIndex:1] integerValue];
+		// We hardly expect the string to conform to signature form "hhhhsvvvv", where
+		// 'h' and 'v' are horisontal and vertical integer indexes and 's' is a separator
+	NSInteger horIndex = [[self substringToIndex:4]		integerValue];
+	NSInteger verIndex = [[self substringFromIndex:5]	integerValue];
 	
-	int tile = (horIndex + rand_r(&verIndex)) % 12;
+	int tile = (horIndex + rand_r((unsigned *)&verIndex)) % 12;
 	
 	NSString *ext = ZBTileImageExtension;
 	

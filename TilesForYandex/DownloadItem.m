@@ -42,9 +42,14 @@
 	
 	url_ = [[signature URLforImageFromSignature] copy];
 
-	NSString *tmpDir = NSTemporaryDirectory();
-	NSString *ext	 = ZBTileImageExtension;
-	NSString *path	 = [tmpDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@", signature_, ext]];
+	static NSString *tmpDir = nil;
+	if (!tmpDir)
+	{ 
+		tmpDir = [NSTemporaryDirectory() retain];
+	}
+	
+	NSString *ext	  = ZBTileImageExtension;
+	NSString *path	  = [tmpDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@", signature_, ext]];
 	
 	NSFileManager *fileManager	= [NSFileManager defaultManager];
 	BOOL		   fileExists	= [fileManager fileExistsAtPath:path];
@@ -79,7 +84,7 @@
 	NSURLRequest * request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.url]];
 	assert( request );
 	
-	connection_ = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
+	self.connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
 	assert( connection_ );
 		
 	self.stream = [NSOutputStream outputStreamToFileAtPath:self.path append:NO];
@@ -88,21 +93,21 @@
 
 - (void) stopDownload
 {
-	if (self.connection) 
+	if (connection_) 
 	{
 		if (delegate_ && [delegate_ respondsToSelector:@selector(downloadFinished:)])
 		{
 			[delegate_ downloadFinished:self];
 		}
 		
-		[self.connection cancel];
-		self.connection = nil;
+		[connection_ cancel];
+		[self setConnection:nil];
 	}
 	
-	if (self.stream)
+	if (stream_)
 	{
-		[self.stream close];
-		self.stream = nil;
+		[stream_ close];
+		[self setStream:nil];
 	}
 }
 

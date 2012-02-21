@@ -17,9 +17,7 @@
 
 - (CALayer *) dequeueReusableTile;
 - (void)	  queueReusableTile:(CALayer *)tile;
-
 - (CALayer *) tileForHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex;
-
 - (void)	  bringTilesIntoAppropriateState;
 
 @end
@@ -126,7 +124,7 @@
 - (void) queueReusableTile:(CALayer *)tile
 {
 	[self.reusableQueue addObject:tile];
-	[tile removeFromSuperlayer];
+	tile.frame = CGRectZero;
 }
 
 #pragma mark Size manipulations
@@ -221,6 +219,8 @@
 	{ 
 		tile = [[[CALayer alloc] init] autorelease];
 		tile.opaque = YES;
+		
+		[self.layer insertSublayer:tile atIndex:0];
 	}
 			
 	tile.contents = (id)[[dataSource_ imageForTileAtHorIndex:horIndex verIndex:verIndex] CGImage];
@@ -254,27 +254,29 @@
 	visibleIndexes.right	= MIN( CGRectGetMaxX(bounds) / tileSize_.width  + 1, horTilesNum_ );
 	visibleIndexes.down		= MIN( CGRectGetMaxY(bounds) / tileSize_.height + 1, verTilesNum_ );
 	
-	VisibleIndexes_t indexesToCheck;
-	
-	indexesToCheck.left  = MIN( visibleIndexes.left,  prevVisibleIndexes_.left	);
-	indexesToCheck.up	 = MIN( visibleIndexes.up,	  prevVisibleIndexes_.up	);
-	indexesToCheck.right = MAX( visibleIndexes.right, prevVisibleIndexes_.right	);
-	indexesToCheck.down	 = MAX( visibleIndexes.down,  prevVisibleIndexes_.down	);
+//	VisibleIndexes_t indexesToCheck;
+//	
+//	indexesToCheck.left  = MIN( visibleIndexes.left,  prevVisibleIndexes_.left	);
+//	indexesToCheck.up	 = MIN( visibleIndexes.up,	  prevVisibleIndexes_.up	);
+//	indexesToCheck.right = MAX( visibleIndexes.right, prevVisibleIndexes_.right	);
+//	indexesToCheck.down	 = MAX( visibleIndexes.down,  prevVisibleIndexes_.down	);
 		
-	NSUInteger sumChanges = abs( visibleIndexes.left  - prevVisibleIndexes_.left)	+
+	NSUInteger frameMoved = abs( visibleIndexes.left  - prevVisibleIndexes_.left)	+
 							abs( visibleIndexes.up	  - prevVisibleIndexes_.up)		+
 							abs( visibleIndexes.right - prevVisibleIndexes_.right)	+
 							abs( visibleIndexes.down  - prevVisibleIndexes_.down);
 	
-	if (!sumChanges) { return; }
+	if (!frameMoved) { return; }
 	
 	[CATransaction setDisableActions:YES];
 
 		// Going through all tiles
-	for (NSUInteger i = indexesToCheck.left; i < indexesToCheck.right; ++i)
+//	for (NSUInteger i = indexesToCheck.left; i < indexesToCheck.right; ++i)
+	for (NSUInteger i = 0; i < horTilesNum_; ++i)
 	{
 		NSMutableArray *column = [visibleTiles_ objectAtIndex:i];
-		for (NSUInteger j = indexesToCheck.up; j < indexesToCheck.down; ++j)
+//		for (NSUInteger j = indexesToCheck.up; j < indexesToCheck.down; ++j)
+		for (NSUInteger j = 0; j < verTilesNum_; ++j)
 		{
 				// If tile is visible it should be put into visibleTiles_, otherwise it should be released
 			BOOL tileIsVisible = ((( i >= visibleIndexes.left ) && ( i <= visibleIndexes.right )) &&
@@ -295,7 +297,6 @@
 											 tileSize_.height * j, 
 											 tileSize_.width, 
 											 tileSize_.height);
-				[self.layer insertSublayer:tileLayer atIndex:0];
 			}
 			else
 			{

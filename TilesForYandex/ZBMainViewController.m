@@ -157,7 +157,7 @@ static NSString* separator = @"_";
 
 - (UIImage *) imageForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
 {
-	NSString* imageSignature = [NSString stringWithFormat:@"%d%@%d", horIndex, separator, verIndex];
+	NSString* imageSignature = [NSString stringWithFormat:@"%.4d%@%.4d", horIndex, separator, verIndex];
 
 	UIImage	*image = nil;
 	
@@ -174,7 +174,12 @@ static NSString* separator = @"_";
 		
 	if (!image)
 	{
-		[self.downloadManager queueLoadinImageForSignature:imageSignature];
+		[[NSRunLoop currentRunLoop] performSelector:@selector(downloadImageForSignature:) 
+											 target:self.downloadManager 
+										   argument:imageSignature
+											  order:0 
+											  modes:[NSArray arrayWithObject:NSDefaultRunLoopMode]];
+//		[self.downloadManager downloadImageForSignature:imageSignature];
 
 		return [UIImage imageNamed:@"placeholder.png"];
 	}
@@ -191,11 +196,7 @@ static NSString* separator = @"_";
 	NSString *signature = [imageInfo objectForKey:@"signature"];
 	NSString *path		= [imageInfo objectForKey:@"path"];
 
-	if (!path) // Image was not loaded
-	{
-		NSLog(@"Image for signature %@ was not load,try to check the url %@", signature, [signature URLforImageFromSignature]);
-		return; 
-	} 
+	if (!path) { return; } // Image was not loaded because of cancelling or error  
 	
 	assert( signature );
 	assert( path );
@@ -203,20 +204,19 @@ static NSString* separator = @"_";
 	ZBCacheSetFileForSignature(self.cache, [path UTF8String], [signature UTF8String], YES);
 		
 	if (!tileScrollView_) { return; }
-	
-	NSArray* components = [signature componentsSeparatedByString:separator];
-	assert([components count] == 2);
-	NSUInteger horIndex = [[components objectAtIndex:0] integerValue];
-	NSUInteger verIndex = [[components objectAtIndex:1] integerValue];
+
+		// We use "hhhhsvvvv" format for signature
+	NSUInteger horIndex = [[signature substringToIndex:4]	integerValue];
+	NSUInteger verIndex = [[signature substringFromIndex:5] integerValue];
 	
 	[self.tileScrollView reloadImageForTileAtHorIndex:horIndex verIndex:verIndex];
 }
 
 - (void) imageNoLongerNeededForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
 {
-	NSString* imageSignature = [NSString stringWithFormat:@"%d%@%d", horIndex, separator, verIndex];
+	NSString* imageSignature = [NSString stringWithFormat:@"%.4d%@%.4d", horIndex, separator, verIndex];
 
-	[self.downloadManager dequeueLoadingImageForSignature:imageSignature];
+	[self.downloadManager cancelDownloadingImageForSignature:imageSignature];
 }
 
 #pragma mark - Network activity observing
