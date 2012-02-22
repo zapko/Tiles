@@ -20,7 +20,7 @@
 @property (nonatomic, retain)	ZBTileScrollView *	tileScrollView;
 @property (nonatomic, retain)	DownloadManager *	downloadManager;
 @property (nonatomic, retain)	NSOperationQueue*	operationQueue;
-@property (nonatomic)			ZBCacheRef			cache;
+@property (assign)				ZBCacheRef			cache;
 
 @end
 
@@ -73,30 +73,44 @@
 	if (!operationQueue_)
 	{
 		operationQueue_ = [[NSOperationQueue alloc] init];
-		operationQueue_.maxConcurrentOperationCount = 1;	// TODO: tweak this with tile profiler
+		operationQueue_.maxConcurrentOperationCount = 1;
 	}
 	return operationQueue_;
 }
 
-- (ZBCacheRef) cache
+#pragma mark - Initialization and memory management
+
+- (ZBCacheRef) createCache
 {
-	if (!cache_)
-	{
-		NSArray *cachePaths = NSSearchPathForDirectoriesInDomains( NSCachesDirectory, NSUserDomainMask, YES );
-		NSString *cachePath = [NSString stringWithFormat:@"%@/", [cachePaths objectAtIndex:0]];
-		cache_ = ZBCacheCreate( [cachePath UTF8String], [ZBTileImageExtension UTF8String] );
-		assert( cache_ );
-	}
-	return cache_;
+	NSArray *cachePaths = NSSearchPathForDirectoriesInDomains( NSCachesDirectory, NSUserDomainMask, YES );
+	NSString *cachePath = [NSString stringWithFormat:@"%@/", [cachePaths objectAtIndex:0]];
+	ZBCacheRef cache = ZBCacheCreate( [cachePath UTF8String], [ZBTileImageExtension UTF8String] );
+	assert( cache );
+	return cache;
 }
 
-- (void) setCache:(ZBCacheRef)cache
+- (id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-	ZBCacheDelete(cache_);
-	cache_ = cache;
+	self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+	if (!self) { return nil;}
+	
+	self.cache = [self createCache];
+	
+	return self;
 }
 
-#pragma mark - Memory management
+- (void) dealloc 
+{
+	self.downloadManager	= nil;
+	self.operationQueue		= nil;
+	
+	[loadedImages_	 release];
+	[tileScrollView_ release];
+	
+	ZBCacheDelete(self.cache);
+	
+	[super dealloc];
+}
 
 - (void) didReceiveMemoryWarning
 {
@@ -106,20 +120,6 @@
 	{
 		self.operationQueue = nil;
 	}
-	
-	self.cache = nil;
-}
-
-- (void) dealloc 
-{
-	self.cache				= nil;
-	self.downloadManager	= nil;
-	self.operationQueue		= nil;
-	
-	[loadedImages_	 release];
-	[tileScrollView_ release];
-	
-	[super dealloc];
 }
 
 #pragma mark - View lifecycle
@@ -175,81 +175,72 @@
 
 - (UIImage *) imageForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
 {
-	NSString* imageSignature = [NSString signatureForHorIndex:horIndex verIndex:verIndex];
+		// If image is already downloaded we will open and decode it in background
+	NSString* imageSignature	= [NSString signatureForHorIndex:horIndex verIndex:verIndex];
 	
-	char file[ZBFilePathLength] = { 0 };
-	int fileExists = ZBCacheGetFileForSignature( self.cache, [imageSignature UTF8String], file );
-	if (fileExists) 
-	{ 
-		NSString *filePath = [NSString stringWithCString:file encoding:NSUTF8StringEncoding];
-		
-		NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:imageSignature, kSignatureKey,
-																		filePath,		kCachedPathKey, nil];
-		
-		NSInvocationOperation *imageOpening = [[NSInvocationOperation alloc] initWithTarget:self 
-																				   selector:@selector(openImage:)
-																					 object:info];
-		
-		[self.operationQueue addOperation:imageOpening];
-		[imageOpening release];
-	}
-	else 
-	{
-		[self.downloadManager downloadImageForSignature:imageSignature];		
-	}
+	NSInvocationOperation *askingImage = [[NSInvocationOperation alloc] initWithTarget:self 
+																			  selector:@selector(askForImage:)
+																				object:imageSignature];
+	[self.operationQueue addOperation:askingImage];
+	[askingImage release];
 	
 	return [UIImage imageNamed:@"placeholder.png"];
 }
 
-- (void) openImage:(NSDictionary *)userInfo
+- (void) askForImage:(NSString *)signature
 {
-	assert( ![NSThread isMainThread] );
-	assert( userInfo );
-	
-	NSString *signature = [userInfo objectForKey:kSignatureKey];
-	NSString *filePath =  [userInfo objectForKey:kCachedPathKey];
-	
-	assert( signature );
-	assert( filePath );
-	
-	CFURLRef cfURL = CFURLCreateWithFileSystemPath( NULL, 
-												   ( CFStringRef )filePath,
-												   kCFURLPOSIXPathStyle, 
-												   false );
-	assert( cfURL );
-	
-	CGImageRef cgImage = NULL;
-	
-	CGDataProviderRef provider = CGDataProviderCreateWithURL( cfURL );
-	if (provider)
+	@autoreleasepool
 	{
-		cgImage = CGImageCreateWithPNGDataProvider( provider, NULL, NO, kCGRenderingIntentDefault );
-		
-		CGDataProviderRelease( provider );
-	}
-	CFRelease( cfURL );
+		assert( ![NSThread isMainThread] );
+		assert( signature );
+				
+		char file[ZBFilePathLength] = { 0 };
+		int fileExists = ZBCacheGetFileForSignature( self.cache, [signature UTF8String], file );
+		if (fileExists) 
+		{	
+			CFStringRef filePath	= (CFStringRef)[NSString stringWithCString:file encoding:NSUTF8StringEncoding];
 
-	
-	NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:(id)cgImage,	kImageKey,
-																		signature,	kSignatureKey, nil];
-	CGImageRelease(cgImage);
-	
-	[self performSelectorOnMainThread:@selector(imageOpeningFinished:) withObject:info waitUntilDone:NO];
+			CFURLRef cfURL = CFURLCreateWithFileSystemPath( NULL, filePath, kCFURLPOSIXPathStyle, false );
+			assert( cfURL );
+			
+			CGImageRef cgImage = NULL;
+			
+			CGDataProviderRef provider = CGDataProviderCreateWithURL( cfURL );
+			if (provider)
+			{
+				cgImage = CGImageCreateWithPNGDataProvider( provider, NULL, NO, kCGRenderingIntentDefault );		
+			}
+			CGDataProviderRelease( provider );
+			CFRelease( cfURL );
+			
+			NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:(id)cgImage,	kImageKey,
+																				signature,	kSignatureKey, nil];
+			CGImageRelease( cgImage );
+			
+			[self performSelectorOnMainThread:@selector(imageOpeningFinished:) withObject:info waitUntilDone:NO];
+		}
+		else 
+		{		
+			[self.downloadManager performSelectorOnMainThread:@selector(downloadImageForSignature:)
+												   withObject:signature
+												waitUntilDone:NO];		
+		}
+	}
 }
 	 
 - (void) imageLoadingFinished:(NSNotification *)note
 {
-	NSDictionary * imageInfo = note.userInfo;
+	NSDictionary *	imageInfo	= note.userInfo;
+	NSString *		path		= [imageInfo objectForKey:kTmpPathKey];
 
-	NSString *signature = [imageInfo objectForKey:kSignatureKey];
-	NSString *path		= [imageInfo objectForKey:kTmpPathKey];
-
-	if (!path) { return; } // Image was not loaded because of cancelling or error  
+		// Image was not loaded because of cancelling or error  
+	if (!path) { return; } 
 	
+	NSString *signature = [imageInfo objectForKey:kSignatureKey];
 	assert( signature );
-	assert( path );
 
-	ZBCacheSetFileForSignature(self.cache, [path UTF8String], [signature UTF8String], YES);
+	ZBCacheRef cache = self.cache;
+	ZBCacheSetFileForSignature( cache, [path UTF8String], [signature UTF8String], YES );
 		
 	if (!tileScrollView_) { return; }
 
@@ -262,24 +253,36 @@
 - (void) imageOpeningFinished:(NSDictionary *)userInfo
 {
 	assert( userInfo );
+	assert( [NSThread isMainThread] );
 	
-	CGImageRef	image =		(CGImageRef)[userInfo objectForKey:kImageKey];
-	NSString *	signature =				[userInfo objectForKey:kSignatureKey];
-	
-	assert( signature );
+	CGImageRef image = (CGImageRef)[userInfo objectForKey:kImageKey];
+	if (!image) { return; }
 
-		// If file is corrupted it should be deleted and a new one downloaded
-	if (!image) { ZBCacheRemoveFileForSignature(self.cache, [signature UTF8String]); }
+	NSString *signature = [userInfo objectForKey:kSignatureKey];	
+	assert( signature );
 	
 	NSUInteger horIndex, verIndex;
 	ZBGetIndexesFromSignature( signature, &horIndex, &verIndex );
-	
+		
 	[self.tileScrollView setImage:image forTileAtHorIndex:horIndex verIndex:verIndex];
 }
 
 - (void) imageNoLongerNeededForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
 {
 	NSString* imageSignature = [NSString signatureForHorIndex:horIndex verIndex:verIndex];
+	
+	NSArray *operations = [self.operationQueue operations];
+	for (NSInvocationOperation* operation in operations)
+	{
+		NSInvocation *invocation = [operation invocation];
+		NSString *signature;
+		[invocation getArgument:&signature atIndex:2];
+		
+		if (![imageSignature isEqualToString:signature]) { continue; }
+
+		[operation cancel];
+		return;
+	}
 	
 	[self.downloadManager cancelDownloadingImageForSignature:imageSignature];
 }

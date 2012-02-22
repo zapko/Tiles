@@ -35,8 +35,6 @@ typedef struct VisibleIndexes
 {
 	NSArray*	visibleTiles_;
 	BOOL		tilesShouldBeRelayouted_;
-	
-	VisibleIndexes_t prevVisibleIndexes_;
 }
 
 @property (nonatomic, assign)	id<ZBTileScrollViewDataSource>	dataSource;

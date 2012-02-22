@@ -107,6 +107,7 @@
 	
 	if (stream_)
 	{
+			// TODO: delete file associated with a stream if download was cancelled or finished with error
 		[stream_ close];
 		[self setStream:nil];
 	}

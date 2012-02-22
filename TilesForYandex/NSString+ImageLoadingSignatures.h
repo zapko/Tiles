@@ -10,6 +10,7 @@
 #define kTmpPathKey		@"tmpPath"
 #define kCachedPathKey	@"cachedPath"
 #define kImageKey		@"imageRef"
+#define kCacheKey		@"cache"
 
 extern NSString* const ZBTileImageExtension;
 

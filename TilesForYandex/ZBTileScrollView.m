@@ -265,29 +265,13 @@
 	visibleIndexes.up		= MAX( CGRectGetMinY(bounds) / tileSize_.height, 0			  );	
 	visibleIndexes.right	= MIN( CGRectGetMaxX(bounds) / tileSize_.width  + 1, horTilesNum_ );
 	visibleIndexes.down		= MIN( CGRectGetMaxY(bounds) / tileSize_.height + 1, verTilesNum_ );
-	
-//	VisibleIndexes_t indexesToCheck;
-//	
-//	indexesToCheck.left  = MIN( visibleIndexes.left,  prevVisibleIndexes_.left	);
-//	indexesToCheck.up	 = MIN( visibleIndexes.up,	  prevVisibleIndexes_.up	);
-//	indexesToCheck.right = MAX( visibleIndexes.right, prevVisibleIndexes_.right	);
-//	indexesToCheck.down	 = MAX( visibleIndexes.down,  prevVisibleIndexes_.down	);
-		
-	NSUInteger frameMoved = abs( visibleIndexes.left  - prevVisibleIndexes_.left)	+
-							abs( visibleIndexes.up	  - prevVisibleIndexes_.up)		+
-							abs( visibleIndexes.right - prevVisibleIndexes_.right)	+
-							abs( visibleIndexes.down  - prevVisibleIndexes_.down);
-	
-	if (!frameMoved) { return; }
-	
+				
 	[CATransaction setDisableActions:YES];
 
 		// Going through all tiles
-//	for (NSUInteger i = indexesToCheck.left; i < indexesToCheck.right; ++i)
 	for (NSUInteger i = 0; i < horTilesNum_; ++i)
 	{
 		NSMutableArray *column = [visibleTiles_ objectAtIndex:i];
-//		for (NSUInteger j = indexesToCheck.up; j < indexesToCheck.down; ++j)
 		for (NSUInteger j = 0; j < verTilesNum_; ++j)
 		{
 				// If tile is visible it should be put into visibleTiles_, otherwise it should be released
@@ -321,9 +305,7 @@
 			}
 		}
 	}
-	
-	prevVisibleIndexes_ = visibleIndexes;
-	
+		
 	[CATransaction setDisableActions:NO];
 }
 
