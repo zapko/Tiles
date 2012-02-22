@@ -86,6 +86,7 @@
 	
 	self.connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
 	assert( connection_ );
+	[connection_ release];
 		
 	self.stream = [NSOutputStream outputStreamToFileAtPath:self.path append:NO];
 	[self.stream open];

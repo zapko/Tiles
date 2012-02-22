@@ -9,21 +9,20 @@
 #define kTileSize	128
 #define kTileNum	100
 
-static NSString* separator = @"_";
-
 #import "ZBMainViewController.h"
 #import "TilesCache.h"
 #import "NSString+ImageLoadingSignatures.h"
+
 
 @interface ZBMainViewController()
 
 @property (nonatomic, retain)	NSMutableSet *		loadedImages;
 @property (nonatomic, retain)	ZBTileScrollView *	tileScrollView;
 @property (nonatomic, retain)	DownloadManager *	downloadManager;
+@property (nonatomic, retain)	NSOperationQueue*	operationQueue;
 @property (nonatomic)			ZBCacheRef			cache;
 
 @end
-
 
 
 @implementation ZBMainViewController
@@ -31,6 +30,7 @@ static NSString* separator = @"_";
 @synthesize loadedImages	= loadedImages_;
 @synthesize tileScrollView	= tileScrollView_;
 @synthesize downloadManager = downloadManager_;
+@synthesize operationQueue	= operationQueue_;
 @synthesize cache			= cache_;
 
 #pragma mark - Lazy objects
@@ -63,9 +63,19 @@ static NSString* separator = @"_";
 	{
 		downloadManager_ = [[DownloadManager alloc] init];
 		downloadManager_.networkActivityDelegate = self;
-		downloadManager_.numberOfSimultaneousLoadings = 7;
+		downloadManager_.numberOfSimultaneousLoadings = 4;
 	}
 	return downloadManager_;
+}
+
+- (NSOperationQueue *) operationQueue
+{
+	if (!operationQueue_)
+	{
+		operationQueue_ = [[NSOperationQueue alloc] init];
+		operationQueue_.maxConcurrentOperationCount = 1;	// TODO: tweak this with tile profiler
+	}
+	return operationQueue_;
 }
 
 - (ZBCacheRef) cache
@@ -92,12 +102,19 @@ static NSString* separator = @"_";
 {
     [super didReceiveMemoryWarning];
 
+	if (operationQueue_ && ![operationQueue_ operationCount]) 
+	{
+		self.operationQueue = nil;
+	}
+	
 	self.cache = nil;
 }
 
 - (void) dealloc 
 {
-	self.cache = nil;
+	self.cache				= nil;
+	self.downloadManager	= nil;
+	self.operationQueue		= nil;
 	
 	[loadedImages_	 release];
 	[tileScrollView_ release];
@@ -147,7 +164,8 @@ static NSString* separator = @"_";
 
 - (IBAction) showInfo:(id)sender
 {    
-    ZBFlipsideViewController *controller = [[[ZBFlipsideViewController alloc] initWithNibName:@"ZBFlipsideViewController" bundle:nil] autorelease];
+    ZBFlipsideViewController *controller = [[[ZBFlipsideViewController alloc] initWithNibName:@"ZBFlipsideViewController" 
+																					   bundle:nil] autorelease];
     controller.delegate = self;
     controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
     [self presentModalViewController:controller animated:YES];
@@ -157,44 +175,74 @@ static NSString* separator = @"_";
 
 - (UIImage *) imageForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
 {
-	NSString* imageSignature = [NSString stringWithFormat:@"%.4d%@%.4d", horIndex, separator, verIndex];
-
-	UIImage	*image = nil;
+	NSString* imageSignature = [NSString signatureForHorIndex:horIndex verIndex:verIndex];
 	
 	char file[ZBFilePathLength] = { 0 };
-	int fileExists = ZBCacheGetFileForSignature(self.cache, [imageSignature UTF8String], file);
+	int fileExists = ZBCacheGetFileForSignature( self.cache, [imageSignature UTF8String], file );
 	if (fileExists) 
 	{ 
 		NSString *filePath = [NSString stringWithCString:file encoding:NSUTF8StringEncoding];
-		image = [UIImage imageWithContentsOfFile:filePath];
+		
+		NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:imageSignature, kSignatureKey,
+																		filePath,		kCachedPathKey, nil];
+		
+		NSInvocationOperation *imageOpening = [[NSInvocationOperation alloc] initWithTarget:self 
+																				   selector:@selector(openImage:)
+																					 object:info];
+		
+		[self.operationQueue addOperation:imageOpening];
+		[imageOpening release];
 	}
-		
-		// If file is corrupted it should be deleted and a new one downloaded
-	if (fileExists && !image) { ZBCacheRemoveFileForSignature(self.cache, [imageSignature UTF8String]); }
-		
-	if (!image)
+	else 
 	{
-		[[NSRunLoop currentRunLoop] performSelector:@selector(downloadImageForSignature:) 
-											 target:self.downloadManager 
-										   argument:imageSignature
-											  order:0 
-											  modes:[NSArray arrayWithObject:NSDefaultRunLoopMode]];
-//		[self.downloadManager downloadImageForSignature:imageSignature];
+		[self.downloadManager downloadImageForSignature:imageSignature];		
+	}
+	
+	return [UIImage imageNamed:@"placeholder.png"];
+}
 
-		return [UIImage imageNamed:@"placeholder.png"];
-	}
-	else
+- (void) openImage:(NSDictionary *)userInfo
+{
+	assert( ![NSThread isMainThread] );
+	assert( userInfo );
+	
+	NSString *signature = [userInfo objectForKey:kSignatureKey];
+	NSString *filePath =  [userInfo objectForKey:kCachedPathKey];
+	
+	assert( signature );
+	assert( filePath );
+	
+	CFURLRef cfURL = CFURLCreateWithFileSystemPath( NULL, 
+												   ( CFStringRef )filePath,
+												   kCFURLPOSIXPathStyle, 
+												   false );
+	assert( cfURL );
+	
+	CGImageRef cgImage = NULL;
+	
+	CGDataProviderRef provider = CGDataProviderCreateWithURL( cfURL );
+	if (provider)
 	{
-		return image;
+		cgImage = CGImageCreateWithPNGDataProvider( provider, NULL, NO, kCGRenderingIntentDefault );
+		
+		CGDataProviderRelease( provider );
 	}
+	CFRelease( cfURL );
+
+	
+	NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:(id)cgImage,	kImageKey,
+																		signature,	kSignatureKey, nil];
+	CGImageRelease(cgImage);
+	
+	[self performSelectorOnMainThread:@selector(imageOpeningFinished:) withObject:info waitUntilDone:NO];
 }
 	 
 - (void) imageLoadingFinished:(NSNotification *)note
 {
 	NSDictionary * imageInfo = note.userInfo;
 
-	NSString *signature = [imageInfo objectForKey:@"signature"];
-	NSString *path		= [imageInfo objectForKey:@"path"];
+	NSString *signature = [imageInfo objectForKey:kSignatureKey];
+	NSString *path		= [imageInfo objectForKey:kTmpPathKey];
 
 	if (!path) { return; } // Image was not loaded because of cancelling or error  
 	
@@ -205,17 +253,34 @@ static NSString* separator = @"_";
 		
 	if (!tileScrollView_) { return; }
 
-		// We use "hhhhsvvvv" format for signature
-	NSUInteger horIndex = [[signature substringToIndex:4]	integerValue];
-	NSUInteger verIndex = [[signature substringFromIndex:5] integerValue];
+	NSUInteger horIndex, verIndex;
+	ZBGetIndexesFromSignature( signature, &horIndex, &verIndex );
 	
 	[self.tileScrollView reloadImageForTileAtHorIndex:horIndex verIndex:verIndex];
 }
 
+- (void) imageOpeningFinished:(NSDictionary *)userInfo
+{
+	assert( userInfo );
+	
+	CGImageRef	image =		(CGImageRef)[userInfo objectForKey:kImageKey];
+	NSString *	signature =				[userInfo objectForKey:kSignatureKey];
+	
+	assert( signature );
+
+		// If file is corrupted it should be deleted and a new one downloaded
+	if (!image) { ZBCacheRemoveFileForSignature(self.cache, [signature UTF8String]); }
+	
+	NSUInteger horIndex, verIndex;
+	ZBGetIndexesFromSignature( signature, &horIndex, &verIndex );
+	
+	[self.tileScrollView setImage:image forTileAtHorIndex:horIndex verIndex:verIndex];
+}
+
 - (void) imageNoLongerNeededForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
 {
-	NSString* imageSignature = [NSString stringWithFormat:@"%.4d%@%.4d", horIndex, separator, verIndex];
-
+	NSString* imageSignature = [NSString signatureForHorIndex:horIndex verIndex:verIndex];
+	
 	[self.downloadManager cancelDownloadingImageForSignature:imageSignature];
 }
 

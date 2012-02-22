@@ -228,6 +228,18 @@
 	return tile;
 }
 
+- (void) setImage:(CGImageRef)image forTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
+{
+	if (horIndex >= horTilesNum_) { return; } // Bounds check
+	if (verIndex >= verTilesNum_) { return; }
+	
+	CALayer * tile = [[visibleTiles_ objectAtIndex:horIndex] objectAtIndex:verIndex];
+	
+	if (IsStub(tile)) { return; }												// If tile is not visible return
+	
+	tile.contents = (id)image;	// else set appropriate image
+}
+
 - (void) reloadImageForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
 {
 	if (horIndex >= horTilesNum_) { return; } // Bounds check

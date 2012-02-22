@@ -210,8 +210,8 @@ NSString* const ZBDownloadComplete = @"com.zababako.yandextiles.downloadFinished
 {
 	if ([NSThread isMainThread])
 	{
-		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[item signature],				@"signature", 
-																			[item pathToDownloadedFile],	@"path",		nil];
+		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[item signature],				kSignatureKey, 
+																			[item pathToDownloadedFile],	kTmpPathKey,	nil];
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName:ZBDownloadComplete object:self userInfo:userInfo];
 		

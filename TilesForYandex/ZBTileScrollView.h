@@ -10,6 +10,7 @@
 
 @class ZBTileScrollView;
 
+
 @protocol ZBTileScrollViewDataSource <NSObject>
 
 @required
@@ -17,6 +18,7 @@
 - (void)	 imageNoLongerNeededForTileAtHorIndex:	(NSUInteger)horIndex	verIndex:(NSUInteger)verIndex;
 
 @end
+
 
 	// Struct to work with indexes of visible tiles
 typedef struct VisibleIndexes
@@ -26,7 +28,6 @@ typedef struct VisibleIndexes
 	NSUInteger right;
 	NSUInteger down;
 } VisibleIndexes_t;
-
 
 	
 	// Tile scroll view that has a data source to ask for tile images
@@ -44,10 +45,11 @@ typedef struct VisibleIndexes
 @property (nonatomic, readonly) NSUInteger	horTilesNum;
 @property (nonatomic, readonly) NSUInteger	verTilesNum;
 
-																	// ( horNum x verNum ) is size of "map" in tiles
+																	// ( horNum x verNum ) is the size of the "map" in tiles
 - (id)		initWithFrame:(CGRect)frame horizontalTilesNum:(NSUInteger)horNum verticalTilesNum:(NSUInteger)verNum;
 
-- (void)	reloadImageForTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex;
+- (void)	setImage:(CGImageRef)image forTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex; 
+- (void)	reloadImageForTileAtHorIndex:				 (NSUInteger)horIndex verIndex:(NSUInteger)verIndex;
 - (void)	reloadData;
 
 
