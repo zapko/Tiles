@@ -16,6 +16,7 @@ extern NSString* const ZBTileImageExtension;
 
 void ZBGetIndexesFromSignature( NSString *signature, NSUInteger* horIndex, NSUInteger* verIndex);
 
+
 @interface NSString (TilesSignatures)
 
 + (NSString *) signatureForHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex;

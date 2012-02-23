@@ -19,9 +19,8 @@
 
 @end
 
-
-	// Struct to work with indexes of visible tiles
-typedef struct VisibleIndexes
+	
+typedef struct VisibleIndexes // Struct to work with indexes of visible tiles
 {
 	NSUInteger left;
 	NSUInteger up;
@@ -30,8 +29,7 @@ typedef struct VisibleIndexes
 } VisibleIndexes_t;
 
 	
-	// Tile scroll view that has a data source to ask for tile images
-@interface ZBTileScrollView : UIScrollView
+@interface ZBTileScrollView : UIScrollView // Tile scroll view that has a data source to ask for tile images
 {
 	NSArray*	visibleTiles_;
 	BOOL		tilesShouldBeRelayouted_;

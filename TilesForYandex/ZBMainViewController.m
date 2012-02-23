@@ -35,6 +35,7 @@
 @synthesize probableDownloads	= probableDownloads_;
 @synthesize cache				= cache_;
 
+#pragma mark -
 #pragma mark - Lazy objects
 
 - (NSMutableSet *) loadedImages
@@ -253,13 +254,13 @@
 	if (!path) { return; } // Image was not loaded because of cancelling or error  
 
 	NSInvocationOperation *askingImageAgain = [[NSInvocationOperation alloc] initWithTarget:self 
-																				   selector:@selector(askForImageAfterDownloading:) 
+																				   selector:@selector(askImageAfterLoading:) 
 																					 object:imageInfo];
 	[self.operationQueue addOperation:askingImageAgain];
 	[askingImageAgain release];
 }
 
-- (void) askForImageAfterDownloading:(NSDictionary *)userInfo
+- (void) askImageAfterLoading:(NSDictionary *)userInfo
 {																	// If first time image wasn't in 
 	@autoreleasepool												// the cache and we downloaded it,
 	{																// Now we should write it cache and open it

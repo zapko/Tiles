@@ -21,7 +21,7 @@
 
 @interface ZBFlipsideViewController : UIViewController
 
-@property (assign, nonatomic) IBOutlet id <ZBFlipsideViewControllerDelegate> delegate;
+@property (assign, nonatomic) id<ZBFlipsideViewControllerDelegate> delegate;
 
 - (IBAction)done:(id)sender;
 
