@@ -44,11 +44,8 @@ typedef struct VisibleIndexes
 @property (nonatomic, readonly) NSUInteger	verTilesNum;
 
 																	// ( horNum x verNum ) is the size of the "map" in tiles
-- (id)		initWithFrame:(CGRect)frame horizontalTilesNum:(NSUInteger)horNum verticalTilesNum:(NSUInteger)verNum;
-
-- (void)	setImage:(CGImageRef)image forTileAtHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex; 
-- (void)	reloadImageForTileAtHorIndex:				 (NSUInteger)horIndex verIndex:(NSUInteger)verIndex;
+- (id)		initWithFrame:(CGRect)frame horizontalTilesNum:	(NSUInteger)horNum		verticalTilesNum:	(NSUInteger)verNum;
+- (void)	setImage:(CGImageRef)image	forTileAtHorIndex:	(NSUInteger)horIndex	verIndex:			(NSUInteger)verIndex; 
 - (void)	reloadData;
-
 
 @end

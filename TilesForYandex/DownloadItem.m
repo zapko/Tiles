@@ -13,8 +13,8 @@
 @interface DownloadItem()
 
 @property (nonatomic, retain)	NSURLConnection *	connection;
-@property (nonatomic, copy)		NSString *			path;
-@property (nonatomic, retain)	NSOutputStream *	stream;
+@property (nonatomic, copy)		NSString		*	path;
+@property (nonatomic, retain)	NSMutableData	*	data;
 
 @end
 
@@ -29,7 +29,7 @@
 
 @synthesize connection	= connection_;
 @synthesize path		= path_;
-@synthesize stream		= stream_;
+@synthesize data		= data_;
 
 #pragma mark - Init and dealloc
 
@@ -88,8 +88,8 @@
 	assert( connection_ );
 	[connection_ release];
 		
-	self.stream = [NSOutputStream outputStreamToFileAtPath:self.path append:NO];
-	[self.stream open];
+	self.data = [[NSMutableData alloc] initWithCapacity:5*1024]; // Should depend on the size of files that would be downloaded
+	[data_ release];
 }
 
 - (void) stopDownload
@@ -105,12 +105,7 @@
 		[self setConnection:nil];
 	}
 	
-	if (stream_)
-	{
-			// TODO: delete file associated with a stream if download was cancelled or finished with error
-		[stream_ close];
-		[self setStream:nil];
-	}
+	self.data = nil;
 }
 
 - (NSString *) pathToDownloadedFile
@@ -129,6 +124,9 @@
     assert( [httpResponse isKindOfClass:[NSHTTPURLResponse class]] );
     
     if ((httpResponse.statusCode / 100) != 2) { [self stopDownload]; } 
+	else {
+		[self.data setLength:0];
+	}
 }
 
 - (void) connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
@@ -136,29 +134,7 @@
 	assert( ![NSThread isMainThread] );
     assert( connection == self.connection );
 
-    NSInteger       dataLength;
-    const uint8_t * dataBytes;
-    NSInteger       bytesWritten;
-    NSInteger       bytesWrittenSoFar;
-	    
-    dataLength = [data length];
-    dataBytes  = [data bytes];
-	
-    bytesWrittenSoFar = 0;
-    do 
-	{
-        bytesWritten = [self.stream write:&dataBytes[bytesWrittenSoFar] maxLength:dataLength - bytesWrittenSoFar];
-        assert(bytesWritten != 0);
-        if (bytesWritten == -1) 
-		{
-			NSLog(@"File write error");
-            [self stopDownload];
-            break;
-        } 
-		else {
-            bytesWrittenSoFar += bytesWritten;
-        }
-    } while (bytesWrittenSoFar != dataLength);
+	[self.data appendData:data];
 }
 
 - (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
@@ -174,7 +150,7 @@
 {
 	assert( ![NSThread isMainThread] );
 
-	isReady_ = YES;
+	isReady_ = [self.data writeToFile:self.path atomically:YES];
 	
 	[self stopDownload];
 }
