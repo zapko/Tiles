@@ -44,7 +44,7 @@
 
 		NSLog(@"Download thread started");
 		
-		self.processingItems = [[NSMutableDictionary alloc] init];
+		self.processingItems = [[[NSMutableDictionary alloc] init] autorelease];
 		
 		self.workingThread =		 [NSThread	currentThread];
 		NSRunLoop* downloadRunLoop = [NSRunLoop currentRunLoop];

@@ -12,9 +12,9 @@
 
 @interface DownloadItem()
 
-@property (nonatomic, retain)	NSURLConnection *	connection;
 @property (nonatomic, copy)		NSString		*	path;
 @property (nonatomic, retain)	NSMutableData	*	data;
+@property (nonatomic, retain)	NSURLConnection *	connection;
 
 @end
 
@@ -27,9 +27,9 @@
 @synthesize url		  = url_;
 @synthesize signature = signature_;
 
-@synthesize connection	= connection_;
 @synthesize path		= path_;
 @synthesize data		= data_;
+@synthesize connection	= connection_;
 
 #pragma mark - Init and dealloc
 
@@ -84,12 +84,10 @@
 	NSURLRequest * request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.url]];
 	assert( request );
 	
-	self.connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
+	self.connection = [NSURLConnection connectionWithRequest:request delegate:self];
 	assert( connection_ );
-	[connection_ release];
 		
-	self.data = [[NSMutableData alloc] initWithCapacity:5*1024]; // Should depend on the size of files that would be downloaded
-	[data_ release];
+	self.data = [[[NSMutableData alloc] initWithCapacity:5*1024] autorelease]; // Should depend on the size of files that would be downloaded
 }
 
 - (void) stopDownload
