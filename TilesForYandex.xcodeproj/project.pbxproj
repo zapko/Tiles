@@ -12,6 +12,7 @@
 		2584C30C14F45CD00097746C /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2584C30B14F45CD00097746C /* Icon@2x.png */; };
 		2584C30E14F45CEB0097746C /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2584C30D14F45CEB0097746C /* Icon.png */; };
 		2584C31214F45D720097746C /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 2584C31114F45D720097746C /* Default.png */; };
+		25959047161B89A400D1E380 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 25959046161B89A400D1E380 /* Default-568h@2x.png */; };
 		259FA18C14F14CE500CE0F3F /* libTilesCache.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 259FA18814F1484200CE0F3F /* libTilesCache.a */; };
 		25ADC3AE14E9683C001D7543 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25ADC3AD14E9683C001D7543 /* UIKit.framework */; };
 		25ADC3B014E9683C001D7543 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25ADC3AF14E9683C001D7543 /* Foundation.framework */; };
@@ -55,6 +56,7 @@
 		2584C30B14F45CD00097746C /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../Icon@2x.png"; sourceTree = "<group>"; };
 		2584C30D14F45CEB0097746C /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Icon.png; sourceTree = "<group>"; };
 		2584C31114F45D720097746C /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = ../Default.png; sourceTree = "<group>"; };
+		25959046161B89A400D1E380 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		259FA18314F1484100CE0F3F /* TilesCache.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = TilesCache.xcodeproj; path = TilesCache/TilesCache.xcodeproj; sourceTree = "<group>"; };
 		25ADC3A914E9683C001D7543 /* TilesForYandex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TilesForYandex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25ADC3AD14E9683C001D7543 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -111,6 +113,7 @@
 		25ADC39E14E9683C001D7543 = {
 			isa = PBXGroup;
 			children = (
+				25959046161B89A400D1E380 /* Default-568h@2x.png */,
 				259FA18314F1484100CE0F3F /* TilesCache.xcodeproj */,
 				25ADC3B314E9683C001D7543 /* TilesForYandex */,
 				25ADC3AC14E9683C001D7543 /* Frameworks */,
@@ -214,7 +217,7 @@
 		25ADC3A014E9683C001D7543 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = Zababako;
 			};
 			buildConfigurationList = 25ADC3A314E9683C001D7543 /* Build configuration list for PBXProject "TilesForYandex" */;
@@ -263,6 +266,7 @@
 				2584C30C14F45CD00097746C /* Icon@2x.png in Resources */,
 				2584C30E14F45CEB0097746C /* Icon.png in Resources */,
 				2584C31214F45D720097746C /* Default.png in Resources */,
+				25959047161B89A400D1E380 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
