@@ -22,7 +22,7 @@ void ZBCacheForgeFilePathForSignature( const ZBCacheRef cache, const char *signa
 	}
 	
 		// Making appropriate filename from signature
-	int signatureLen = strlen(signature);
+	unsigned long signatureLen = strlen(signature);
 	
 	char filename[signatureLen + 1];
 	memset(filename, 0, signatureLen + 1);
@@ -53,7 +53,7 @@ ZBCacheRef ZBCacheCreate( const char* pathToCache, const char* tileImageExtensio
 	}
 	
 		// Checking whether cache directory is valid and writable
-	int pathLen = strlen( pathToCache );
+	unsigned long pathLen = strlen( pathToCache );
 	char probePath[pathLen + 5]; // 4 - test 1 - \0
 	memset(probePath, 0, pathLen + 5);
 	
@@ -85,7 +85,7 @@ ZBCacheRef ZBCacheCreate( const char* pathToCache, const char* tileImageExtensio
 	strncpy( cache->path, pathToCache, pathLen );
 	
 		// Allocating extension string
-	int extLen	= strlen( tileImageExtension );
+	unsigned long extLen = strlen( tileImageExtension );
 	
 	cache->extension = calloc( extLen + 1, charSize );
 	if ( !cache->extension ) 
@@ -157,8 +157,8 @@ int ZBCacheSetFileForSignature( const ZBCacheRef	cache,
 	
 	while ( !condition ) 
 	{
-		int numread =	fread ( buf, charSize, bufSize, tmp );
-		int numwrite =	fwrite( buf, charSize, numread, cached );
+		unsigned long numread  = fread ( buf, charSize, bufSize, tmp );
+		unsigned long numwrite = fwrite( buf, charSize, numread, cached );
 		
 		if ( numread != bufSize) 
 		{ 

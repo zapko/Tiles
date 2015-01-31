@@ -11,7 +11,7 @@
 
 #import "NSString+ImageLoadingSignatures.h"
 
-NSString* const ZBDownloadComplete = @"com.zababako.yandextiles.downloadFinishedNotification";
+NSString* const ZBNotificationDownloadComplete = @"com.zababako.tiles.downloadFinishedNotification";
 
 
 @interface DownloadManager()
@@ -213,7 +213,7 @@ NSString* const ZBDownloadComplete = @"com.zababako.yandextiles.downloadFinished
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[item signature],				kSignatureKey, 
 																			[item pathToDownloadedFile],	kTmpPathKey,	nil];
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName:ZBDownloadComplete object:self userInfo:userInfo];
+		[[NSNotificationCenter defaultCenter] postNotificationName:ZBNotificationDownloadComplete object:self userInfo:userInfo];
 		
 		[self startNextItemInQueue];
 	}

@@ -12,10 +12,13 @@ NSString* const ZBTileImageExtension = @"png";
 
 void ZBGetIndexesFromSignature( NSString *signature, NSUInteger* horIndex, NSUInteger* verIndex)
 {
-		// We hardly expect the string to conform to signature form "hhhhsvvvv", where
-		// 'h' and 'v' are horisontal and vertical integer indexes and 's' is a separator
-	*horIndex = [[signature substringToIndex:4]		integerValue];
-	*verIndex = [[signature substringFromIndex:5]	integerValue];
+		// We expect the string to conform to signature form "hhhhsvvvv", where
+		// 'h' and 'v' are horizontal and vertical integer indexes and 's' is a separator
+	
+		// TODO: add assert
+
+	*horIndex = [[signature substringToIndex:4]	  integerValue];
+	*verIndex = [[signature substringFromIndex:5] integerValue];
 }
 
 @implementation NSString (TilesSignatures)
@@ -35,7 +38,7 @@ void ZBGetIndexesFromSignature( NSString *signature, NSUInteger* horIndex, NSUIn
 
 + (NSString *) signatureForHorIndex:(NSUInteger)horIndex verIndex:(NSUInteger)verIndex
 {
-	return [NSString stringWithFormat:@"%.4d_%.4d", horIndex, verIndex];
+	return [NSString stringWithFormat:@"%.4d_%.4d", (unsigned int)horIndex, (unsigned int)verIndex];
 }
 
 @end

@@ -12,9 +12,9 @@
 
 @interface DownloadItem()
 
-@property (nonatomic, copy)		NSString		*	path;
-@property (nonatomic, retain)	NSMutableData	*	data;
-@property (nonatomic, retain)	NSURLConnection *	connection;
+@property (nonatomic, copy)		NSString		*path;
+@property (nonatomic, retain)	NSMutableData	*data;
+@property (nonatomic, retain)	NSURLConnection *connection;
 
 @end
 
@@ -54,7 +54,7 @@
 	NSFileManager *fileManager	= [NSFileManager defaultManager];
 	BOOL		   fileExists	= [fileManager fileExistsAtPath:path];
 
-	NSUInteger i = 1;
+	unsigned int i = 1;
 	while (fileExists)
 	{
 		path		= [tmpDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_%ui.%@", signature_, ++i, ext]];
@@ -92,7 +92,7 @@
 
 - (void) stopDownload
 {
-	if (connection_) 
+	if (connection_)
 	{
 		if (delegate_ && [delegate_ respondsToSelector:@selector(downloadFinished:)])
 		{

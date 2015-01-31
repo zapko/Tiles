@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Downloader.h"
 
-extern NSString* const ZBDownloadComplete;
+extern NSString* const ZBNotificationDownloadComplete;
 
 @protocol NetworkActivityDelegate <NSObject>
 

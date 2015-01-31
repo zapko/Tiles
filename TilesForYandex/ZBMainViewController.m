@@ -157,7 +157,7 @@
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(imageLoadingFinished:)
-												 name:ZBDownloadComplete
+												 name:ZBNotificationDownloadComplete
 											   object:self.downloadManager];
 }
 
@@ -177,7 +177,7 @@
 
 - (void) flipsideViewControllerDidFinish:(ZBFlipsideViewController *)controller
 {
-    [self dismissModalViewControllerAnimated:YES];
+	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction) showInfo:(id)sender
@@ -186,7 +186,7 @@
 																					   bundle:nil] autorelease];
     controller.delegate = self;
     controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-    [self presentModalViewController:controller animated:YES];
+	[self presentViewController:controller animated:YES completion:nil];
 }
 
 #pragma mark - Tiles images providing
