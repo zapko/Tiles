@@ -1,5 +1,5 @@
 # Tiles
-This was a test task for Yandex back in 2012.
+This was a test task back in 2012.
 
 ## Assignment
 The goal was to create a simplified version of MapKit with 1 layer of 100 by 100 tiles. 
